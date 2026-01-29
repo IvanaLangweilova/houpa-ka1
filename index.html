@@ -44,6 +44,8 @@
           <g id="boardGroup">
             <rect x="150" y="155" width="520" height="30" rx="14" fill="black" opacity="0.12"></rect>
             <!-- rysky -->
+            <g id="scale" font-size="10" fill="black" opacity="0.6"></g>
+
             <g opacity="0.1" stroke="black" stroke-width="2">
               <line x1="150" y1="155" x2="150" y2="185"></line>
               <line x1="215" y1="155" x2="215" y2="185"></line>
@@ -216,6 +218,14 @@
   function mapX(xMeters, half){
     // -half => 150, +half => 670, střed 410
     return 410 + (xMeters / half) * 260;
+    // vykreslení měřítka
+const scale = document.getElementById('scale');
+scale.innerHTML = '';
+for (let i = -half; i <= half; i += 0.5) {
+  const x = mapX(i, half);
+  scale.innerHTML += `<text x="${x}" y="200" text-anchor="middle">${i.toFixed(1)}</text>`;
+}
+
   }
 
   function recalc(){
@@ -301,6 +311,7 @@ const tilt = clamp((Msum / maxMoment) * 12, -12, 12);
 </script>
 </body>
 </html>
+
 
 
 
