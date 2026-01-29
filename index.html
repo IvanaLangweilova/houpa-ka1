@@ -1,1 +1,304 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Páka – houpačka (pes × slon)</title>
+  <style>
+    body { font-family: system-ui, Arial, sans-serif; margin: 20px; line-height: 1.35; }
+    h1 { margin: 0 0 8px; }
+    .muted { color: #666; }
+    .grid { display: grid; gap: 16px; grid-template-columns: 1fr; }
+    @media (min-width: 900px){ .grid { grid-template-columns: 1.1fr 0.9fr; } }
+    .card { border: 1px solid #ddd; border-radius: 14px; padding: 14px; }
+    label { display:block; font-size: 14px; margin: 10px 0 6px; }
+    input[type="range"]{ width: 100%; }
+    .row { display:flex; align-items:center; justify-content:space-between; gap: 12px; }
+    .badge { display:inline-block; padding: 6px 10px; border-radius: 999px; border: 1px solid #ddd; font-size: 13px; }
+    .ok { background:#e8fff0; border-color:#b9f2c8; }
+    .warn{ background:#fff8e6; border-color:#ffe2a8; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; }
+    .small { font-size: 13px; }
+    svg { width: 100%; height: 260px; display:block; }
+    .two { display:grid; gap: 12px; grid-template-columns: 1fr; }
+    @media (min-width: 900px){ .two{ grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+  <h1>Páka – houpací houpačka (pes × slon)</h1>
+  <div class="muted">Měň hmotnosti, délku prkna a polohu zvířat. Vzorce i výsledky se přepočítají automaticky.</div>
+
+  <div class="grid" style="margin-top:16px;">
+    <div class="card">
+      <div class="row">
+        <div id="status" class="badge">…</div>
+        <div class="badge mono">ΣM = <span id="msum">0</span> N·m</div>
+      </div>
+
+      <div style="margin-top:12px; border:1px solid #eee; border-radius:14px; padding:12px; background:#fafafa;">
+        <svg viewBox="0 0 820 320" aria-label="Houpačka">
+          <line x1="40" y1="280" x2="780" y2="280" stroke="black" stroke-width="4" opacity="0.15"></line>
+          <polygon points="410,280 360,280 410,170 460,280" fill="black" opacity="0.08"></polygon>
+          <circle cx="410" cy="170" r="10" fill="black" opacity="0.2"></circle>
+
+          <g id="boardGroup">
+            <rect x="150" y="155" width="520" height="30" rx="14" fill="black" opacity="0.12"></rect>
+            <!-- rysky -->
+            <g opacity="0.1" stroke="black" stroke-width="2">
+              <line x1="150" y1="155" x2="150" y2="185"></line>
+              <line x1="215" y1="155" x2="215" y2="185"></line>
+              <line x1="280" y1="155" x2="280" y2="185"></line>
+              <line x1="345" y1="155" x2="345" y2="185"></line>
+              <line x1="410" y1="155" x2="410" y2="185"></line>
+              <line x1="475" y1="155" x2="475" y2="185"></line>
+              <line x1="540" y1="155" x2="540" y2="185"></line>
+              <line x1="605" y1="155" x2="605" y2="185"></line>
+              <line x1="670" y1="155" x2="670" y2="185"></line>
+            </g>
+
+            <!-- pes -->
+            <g id="dog" transform="translate(250 138)">
+              <circle cx="0" cy="0" r="16" fill="black" opacity="0.55"></circle>
+              <circle cx="-10" cy="-12" r="6" fill="black" opacity="0.55"></circle>
+              <circle cx="10" cy="-12" r="6" fill="black" opacity="0.55"></circle>
+              <text x="0" y="30" text-anchor="middle" font-size="12" fill="black" opacity="0.7">pes</text>
+            </g>
+
+            <!-- slon -->
+            <g id="elephant" transform="translate(570 140)">
+              <rect x="-18" y="-14" width="36" height="28" rx="8" fill="black" opacity="0.6"></rect>
+              <rect x="18" y="-6" width="14" height="12" rx="6" fill="black" opacity="0.6"></rect>
+              <circle cx="-10" cy="-16" r="6" fill="black" opacity="0.6"></circle>
+              <circle cx="10" cy="-16" r="6" fill="black" opacity="0.6"></circle>
+              <text x="0" y="30" text-anchor="middle" font-size="12" fill="black" opacity="0.7">slon</text>
+            </g>
+          </g>
+
+          <text x="170" y="310" font-size="12" fill="black" opacity="0.55">levá strana (x &lt; 0)</text>
+          <text x="560" y="310" font-size="12" fill="black" opacity="0.55">pravá strana (x &gt; 0)</text>
+        </svg>
+      </div>
+
+      <div class="two" style="margin-top:12px;">
+        <div class="card">
+          <b>Výsledky</b>
+          <div class="small muted" style="margin-top:8px;">
+            Tíha psa Fₚ: <b><span id="fdog"></span></b> N<br/>
+            Tíha slona Fₛ: <b><span id="fel"></span></b> N<br/>
+            <hr style="border:none;border-top:1px solid #eee;margin:10px 0;">
+            Moment psa Mₚ = Fₚ·xₚ: <b><span id="mdog"></span></b> N·m<br/>
+            Moment slona Mₛ = Fₛ·xₛ: <b><span id="mel"></span></b> N·m<br/>
+          </div>
+        </div>
+
+        <div class="card">
+          <b>Rychlé vyvážení</b>
+          <div class="small muted" style="margin-top:8px;">
+            Pro vyvážení (typicky pes vlevo, slon vpravo):<br/>
+            <span class="mono">mₚ·dₚ = mₛ·dₛ</span><br/><br/>
+            Slon má být od osy: <b><span id="dElEq"></span></b> m<br/>
+            Pes má být od osy: <b><span id="dDogEq"></span></b> m
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <b>Nastavení parametrů</b>
+
+      <label>Hmotnost psa mₚ: <b><span id="massDogVal"></span></b> kg</label>
+      <input id="massDog" type="range" min="1" max="120" step="1" value="25">
+
+      <label>Hmotnost slona mₛ: <b><span id="massElVal"></span></b> kg</label>
+      <input id="massEl" type="range" min="50" max="6000" step="10" value="800">
+
+      <label>Délka prkna L: <b><span id="lenVal"></span></b> m</label>
+      <input id="len" type="range" min="1.5" max="10" step="0.1" value="4">
+
+      <label>Pozice psa xₚ (od osy): <b><span id="xDogVal"></span></b> m</label>
+      <input id="xDog" type="range" min="-2" max="2" step="0.05" value="-1.2">
+
+      <label>Pozice slona xₛ (od osy): <b><span id="xElVal"></span></b> m</label>
+      <input id="xEl" type="range" min="-2" max="2" step="0.05" value="1.2">
+
+      <hr style="border:none;border-top:1px solid #eee;margin:14px 0;">
+
+      <b>Vzorce a vysvětlení (statika)</b>
+      <div class="card" style="margin-top:10px;">
+        <div class="muted">Moment síly:</div>
+        <div class="mono" style="margin-top:6px;">
+          M = F · r, &nbsp;F = m · g<br/>
+          ⇒ M = (m · g) · r
+        </div>
+        <div class="small muted" style="margin-top:8px;">
+          r (nebo d) je rameno páky – vzdálenost od osy.
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:10px;">
+        <div class="muted">Podmínka rovnováhy okolo osy:</div>
+        <div class="mono" style="margin-top:6px;">
+          ΣM = 0<br/>
+          (mₚ · g · dₚ) = (mₛ · g · dₛ)<br/>
+          mₚ · dₚ = mₛ · dₛ  (g se zkrátí)
+        </div>
+        <div class="small muted" style="margin-top:8px;">
+          V praxi: pokud se houpačka nehýbe, součet momentů okolo osy je nulový.
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:10px;">
+        <div class="muted">Druhá podmínka statiky (síly):</div>
+        <div class="mono" style="margin-top:6px;">ΣF = 0</div>
+        <div class="small muted" style="margin-top:8px;">
+          Reakce v ose vyrovná součet tíhových sil (těla jsou v klidu).
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:10px;background:#fafafa;">
+        <b>Popis veličin</b>
+        <div class="small muted" style="margin-top:8px;">
+          mₚ, mₛ … hmotnost psa / slona (kg)<br/>
+          g … tíhové zrychlení (≈ 9,81 m·s⁻²)<br/>
+          F … tíhová síla (N), F = m·g<br/>
+          d nebo r … rameno páky (m)<br/>
+          M … moment síly (N·m), M = F·r<br/>
+          ΣM … součet momentů okolo osy (rovnováha: ΣM = 0)
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const g = 9.81;
+
+  const els = {
+    massDog: document.getElementById('massDog'),
+    massEl: document.getElementById('massEl'),
+    len: document.getElementById('len'),
+    xDog: document.getElementById('xDog'),
+    xEl: document.getElementById('xEl'),
+
+    massDogVal: document.getElementById('massDogVal'),
+    massElVal: document.getElementById('massElVal'),
+    lenVal: document.getElementById('lenVal'),
+    xDogVal: document.getElementById('xDogVal'),
+    xElVal: document.getElementById('xElVal'),
+
+    status: document.getElementById('status'),
+    msum: document.getElementById('msum'),
+    fdog: document.getElementById('fdog'),
+    fel: document.getElementById('fel'),
+    mdog: document.getElementById('mdog'),
+    mel: document.getElementById('mel'),
+    dElEq: document.getElementById('dElEq'),
+    dDogEq: document.getElementById('dDogEq'),
+
+    boardGroup: document.getElementById('boardGroup'),
+    dog: document.getElementById('dog'),
+    elephant: document.getElementById('elephant'),
+  };
+
+  function clamp(v, min, max){ return Math.min(max, Math.max(min, v)); }
+  function fmt(n, d=2){ return Number.isFinite(n) ? n.toFixed(d) : '–'; }
+
+  function updateRangesByLength(L){
+    const half = L/2;
+    els.xDog.min = (-half).toFixed(2);
+    els.xDog.max = (half).toFixed(2);
+    els.xEl.min = (-half).toFixed(2);
+    els.xEl.max = (half).toFixed(2);
+
+    els.xDog.value = clamp(parseFloat(els.xDog.value), -half, half);
+    els.xEl.value = clamp(parseFloat(els.xEl.value), -half, half);
+  }
+
+  function mapX(xMeters, half){
+    // -half => 150, +half => 670, střed 410
+    return 410 + (xMeters / half) * 260;
+  }
+
+  function recalc(){
+    const mDog = parseFloat(els.massDog.value);
+    const mEl  = parseFloat(els.massEl.value);
+    const L    = parseFloat(els.len.value);
+    const half = L/2;
+
+    updateRangesByLength(L);
+
+    let xDog = parseFloat(els.xDog.value);
+    let xEl  = parseFloat(els.xEl.value);
+
+    xDog = clamp(xDog, -half, half);
+    xEl  = clamp(xEl, -half, half);
+
+    // síly
+    const Fdog = mDog * g;
+    const Fel  = mEl  * g;
+
+    // momenty se znaménkem
+    const Mdog = Fdog * xDog;
+    const Mel  = Fel  * xEl;
+    const Msum = Mdog + Mel;
+
+    // „náklon“ pro vizualizaci (omezený)
+    const tilt = clamp(Msum / 20000, -12, 12);
+
+    // rovnovážné vzdálenosti (na své straně)
+    const dDog = Math.abs(xDog);
+    const dEl  = Math.abs(xEl);
+    const dElEq = mEl > 0 ? (mDog * dDog) / mEl : 0;
+    const dDogEq = mDog > 0 ? (mEl * dEl) / mDog : 0;
+
+    // UI texty
+    els.massDogVal.textContent = fmt(mDog,0);
+    els.massElVal.textContent  = fmt(mEl,0);
+    els.lenVal.textContent     = fmt(L,1);
+    els.xDogVal.textContent    = fmt(xDog,2);
+    els.xElVal.textContent     = fmt(xEl,2);
+
+    els.fdog.textContent = fmt(Fdog,1);
+    els.fel.textContent  = fmt(Fel,1);
+    els.mdog.textContent = fmt(Mdog,1);
+    els.mel.textContent  = fmt(Mel,1);
+    els.msum.textContent = fmt(Msum,1);
+
+    els.dElEq.textContent  = fmt(dElEq,3);
+    els.dDogEq.textContent = fmt(dDogEq,3);
+
+    const eps = 1e-6;
+    if (Math.abs(Msum) < eps){
+      els.status.textContent = 'Rovnováha (houpačka je vyvážená)';
+      els.status.className = 'badge ok';
+    } else if (Msum > 0){
+      els.status.textContent = 'Převažuje pravá strana (slon jde dolů)';
+      els.status.className = 'badge warn';
+    } else {
+      els.status.textContent = 'Převažuje levá strana (pes jde dolů)';
+      els.status.className = 'badge warn';
+    }
+
+    // SVG: náklon prkna
+    els.boardGroup.setAttribute('transform', `rotate(${tilt} 410 170)`);
+
+    // SVG: pozice zvířat
+    const dogX = mapX(xDog, half);
+    const elX  = mapX(xEl, half);
+    els.dog.setAttribute('transform', `translate(${dogX} 138)`);
+    els.elephant.setAttribute('transform', `translate(${elX} 140)`);
+  }
+
+  ['input','change'].forEach(evt=>{
+    els.massDog.addEventListener(evt, recalc);
+    els.massEl.addEventListener(evt, recalc);
+    els.len.addEventListener(evt, recalc);
+    els.xDog.addEventListener(evt, recalc);
+    els.xEl.addEventListener(evt, recalc);
+  });
+
+  recalc();
+</script>
+</body>
+</html>
+
 
