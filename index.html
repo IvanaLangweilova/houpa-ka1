@@ -10,11 +10,12 @@
     .muted { color: #666; }
     .grid { display: grid; gap: 16px; grid-template-columns: 1fr; }
     @media (min-width: 900px){ .grid { grid-template-columns: 1.1fr 0.9fr; } }
-    .card { border: 1px solid #ddd; border-radius: 14px; padding: 14px; }
+    .card { border: 1px solid #ddd; border-radius: 14px; padding: 14px; background:#fff; }
     label { display:block; font-size: 14px; margin: 10px 0 6px; }
     input[type="range"]{ width: 100%; }
-    .row { display:flex; align-items:center; justify-content:space-between; gap: 12px; }
-    .badge { display:inline-block; padding: 6px 10px; border-radius: 999px; border: 1px solid #ddd; font-size: 13px; }
+    input:disabled{ opacity: 0.55; cursor: not-allowed; }
+    .row { display:flex; align-items:center; justify-content:space-between; gap: 12px; flex-wrap:wrap; }
+    .badge { display:inline-block; padding: 6px 10px; border-radius: 999px; border: 1px solid #ddd; font-size: 13px; background:#fafafa; }
     .ok { background:#e8fff0; border-color:#b9f2c8; }
     .warn{ background:#fff8e6; border-color:#ffe2a8; }
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; }
@@ -22,11 +23,39 @@
     svg { width: 100%; height: 260px; display:block; }
     .two { display:grid; gap: 12px; grid-template-columns: 1fr; }
     @media (min-width: 900px){ .two{ grid-template-columns: 1fr 1fr; } }
+
+    .sep { border:none; border-top:1px solid #eee; margin:14px 0; }
+
+    .massRow { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:6px; }
+    .massRow input[type="number"]{
+      width: 150px; padding: 8px; border: 1px solid #ddd; border-radius: 10px; background:#fff;
+    }
+    .chip { display:inline-block; padding:4px 8px; border:1px solid #ddd; border-radius:999px; background:#fff; font-size:12px; color:#555; }
+
+    .btnrow { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+    button{ border:1px solid #ddd; background:#fff; padding:8px 10px; border-radius:10px; cursor:pointer; }
+    button:hover{ background:#fafafa; }
+
+    .taskBox{ background:#fafafa; border:1px solid #eee; border-radius:14px; padding:12px; }
+    .taskGrid{ display:grid; gap:10px; grid-template-columns: 1fr; }
+    @media (min-width: 900px){ .taskGrid{ grid-template-columns: 1fr 1fr; } }
+
+    .taskInput{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:8px; }
+    .taskInput input{
+      width: 170px; padding: 8px; border: 1px solid #ddd; border-radius: 10px; background:#fff;
+    }
   </style>
 </head>
 <body>
   <h1>Páka – houpací houpačka (pes × slon)</h1>
-  <div class="muted">Měň hmotnosti, délku prkna a polohu zvířat. Vzorce i výsledky se přepočítají automaticky.</div>
+
+  <div class="muted">
+    Páka ukazuje, že <b>nezáleží jen na hmotnosti</b>, ale i na <b>vzdálenosti od osy</b> (rameni páky).
+    Proto může lehčí těleso převážit těžší, když je dál od středu.
+    <br><br>
+    <b>Kde to využiju v běžném životě:</b> nůžky, kleště, páčidlo, otvírák, klíč na šrouby, kolečko/vozík nebo houpačka –
+    delší rameno páky znamená menší potřebnou sílu.
+  </div>
 
   <div class="grid" style="margin-top:16px;">
     <div class="card">
@@ -43,36 +72,30 @@
 
           <g id="boardGroup">
             <rect x="150" y="155" width="520" height="30" rx="14" fill="black" opacity="0.12"></rect>
-            <!-- rysky -->
-            <g id="scale" font-size="10" fill="black" opacity="0.6"></g>
 
-            <g opacity="0.1" stroke="black" stroke-width="2">
-              <line x1="150" y1="155" x2="150" y2="185"></line>
-              <line x1="215" y1="155" x2="215" y2="185"></line>
-              <line x1="280" y1="155" x2="280" y2="185"></line>
-              <line x1="345" y1="155" x2="345" y2="185"></line>
-              <line x1="410" y1="155" x2="410" y2="185"></line>
-              <line x1="475" y1="155" x2="475" y2="185"></line>
-              <line x1="540" y1="155" x2="540" y2="185"></line>
-              <line x1="605" y1="155" x2="605" y2="185"></line>
-              <line x1="670" y1="155" x2="670" y2="185"></line>
+            <!-- PES -->
+            <g id="dog" transform="translate(250 140)" style="cursor:grab;">
+              <ellipse cx="0" cy="0" rx="22" ry="14" fill="black" opacity="0.55"></ellipse>
+              <circle cx="-22" cy="-6" r="10" fill="black" opacity="0.55"></circle>
+              <ellipse cx="-30" cy="-4" rx="6" ry="4" fill="black" opacity="0.55"></ellipse>
+              <path d="M-26,-18 C-30,-26 -18,-26 -20,-16 Z" fill="black" opacity="0.55"></path>
+              <path d="M-18,-18 C-20,-28 -8,-26 -12,-16 Z" fill="black" opacity="0.55"></path>
+              <path d="M20,-2 C32,-10 34,6 22,6 Z" fill="black" opacity="0.55"></path>
+              <rect x="-8" y="10" width="6" height="10" rx="2" fill="black" opacity="0.45"></rect>
+              <rect x="4" y="10" width="6" height="10" rx="2" fill="black" opacity="0.45"></rect>
+              <text x="0" y="36" text-anchor="middle" font-size="12" fill="black" opacity="0.7">pes</text>
             </g>
 
-            <!-- pes -->
-            <g id="dog" transform="translate(250 138)">
-              <circle cx="0" cy="0" r="16" fill="black" opacity="0.55"></circle>
-              <circle cx="-10" cy="-12" r="6" fill="black" opacity="0.55"></circle>
-              <circle cx="10" cy="-12" r="6" fill="black" opacity="0.55"></circle>
-              <text x="0" y="30" text-anchor="middle" font-size="12" fill="black" opacity="0.7">pes</text>
-            </g>
-
-            <!-- slon -->
-            <g id="elephant" transform="translate(570 140)">
-              <rect x="-18" y="-14" width="36" height="28" rx="8" fill="black" opacity="0.6"></rect>
-              <rect x="18" y="-6" width="14" height="12" rx="6" fill="black" opacity="0.6"></rect>
-              <circle cx="-10" cy="-16" r="6" fill="black" opacity="0.6"></circle>
-              <circle cx="10" cy="-16" r="6" fill="black" opacity="0.6"></circle>
-              <text x="0" y="30" text-anchor="middle" font-size="12" fill="black" opacity="0.7">slon</text>
+            <!-- SLON -->
+            <g id="elephant" transform="translate(570 142)" style="cursor:grab;">
+              <ellipse cx="0" cy="0" rx="26" ry="16" fill="black" opacity="0.60"></ellipse>
+              <circle cx="18" cy="-6" r="12" fill="black" opacity="0.60"></circle>
+              <ellipse cx="10" cy="-4" rx="10" ry="9" fill="black" opacity="0.45"></ellipse>
+              <path d="M30,-4 C42,-2 42,14 30,12 C24,11 24,4 30,-4 Z" fill="black" opacity="0.60"></path>
+              <path d="M22,2 C30,2 26,10 20,8 Z" fill="black" opacity="0.35"></path>
+              <rect x="-14" y="10" width="8" height="12" rx="2" fill="black" opacity="0.45"></rect>
+              <rect x="2" y="10" width="8" height="12" rx="2" fill="black" opacity="0.45"></rect>
+              <text x="0" y="36" text-anchor="middle" font-size="12" fill="black" opacity="0.7">slon</text>
             </g>
           </g>
 
@@ -96,7 +119,7 @@
         <div class="card">
           <b>Rychlé vyvážení</b>
           <div class="small muted" style="margin-top:8px;">
-            Pro vyvážení (typicky pes vlevo, slon vpravo):<br/>
+            Pro vyvážení:<br/>
             <span class="mono">mₚ·dₚ = mₛ·dₛ</span><br/><br/>
             Slon má být od osy: <b><span id="dElEq"></span></b> m<br/>
             Pes má být od osy: <b><span id="dDogEq"></span></b> m
@@ -109,9 +132,17 @@
       <b>Nastavení parametrů</b>
 
       <label>Hmotnost psa mₚ: <b><span id="massDogVal"></span></b> kg</label>
-      <input id="massDog" type="range" min="1" max="6000" step="1" value="25">
+      <div class="massRow">
+        <span class="chip">Zadej (kg):</span>
+        <input id="massDogIn" type="number" min="1" max="150" step="1" value="25">
+      </div>
+      <input id="massDog" type="range" min="1" max="150" step="1" value="25">
 
-      <label>Hmotnost slona mₛ: <b><span id="massElVal"></span></b> kg</label>
+      <label style="margin-top:12px;">Hmotnost slona mₛ: <b><span id="massElVal"></span></b> kg</label>
+      <div class="massRow">
+        <span class="chip">Zadej (kg):</span>
+        <input id="massElIn" type="number" min="1" max="6000" step="1" value="800">
+      </div>
       <input id="massEl" type="range" min="1" max="6000" step="1" value="800">
 
       <label>Délka prkna L: <b><span id="lenVal"></span></b> m</label>
@@ -123,7 +154,39 @@
       <label>Pozice slona xₛ (od osy): <b><span id="xElVal"></span></b> m</label>
       <input id="xEl" type="range" min="-2" max="2" step="0.05" value="1.2">
 
-      <hr style="border:none;border-top:1px solid #eee;margin:14px 0;">
+      <hr class="sep">
+
+      <!-- ÚLOHA PRO ŽÁKY -->
+      <div class="taskBox">
+        <b>Úloha pro žáky</b>
+        <div class="small muted" style="margin-top:6px;">
+          Vygeneruj úlohu a dopočítej neznámé rameno tak, aby platilo <span class="mono">mₚ·dₚ = mₛ·dₛ</span>.
+          Po vygenerování je <b>neznámý posuvník zamčený</b>.
+        </div>
+
+        <div class="btnrow">
+          <button id="newTask">Náhodná úloha</button>
+          <button id="checkTask">Zkontrolovat</button>
+        </div>
+
+        <div class="taskGrid" style="margin-top:10px;">
+          <div class="small">
+            <b>Zadané:</b><br>
+            <span id="taskText" class="muted">Klikni na „Náhodná úloha“.</span>
+          </div>
+
+          <div>
+            <div class="small"><b>Odpověď žáka:</b></div>
+            <div class="taskInput">
+              <span class="chip">Neznámé rameno (m):</span>
+              <input id="ans" type="number" step="0.01" placeholder="např. 1.25">
+            </div>
+            <div id="taskResult" class="small muted" style="margin-top:8px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="sep">
 
       <b>Vzorce a vysvětlení (statika)</b>
       <div class="card" style="margin-top:10px;">
@@ -145,15 +208,7 @@
           mₚ · dₚ = mₛ · dₛ  (g se zkrátí)
         </div>
         <div class="small muted" style="margin-top:8px;">
-          V praxi: pokud se houpačka nehýbe, součet momentů okolo osy je nulový.
-        </div>
-      </div>
-
-      <div class="card" style="margin-top:10px;">
-        <div class="muted">Druhá podmínka statiky (síly):</div>
-        <div class="mono" style="margin-top:6px;">ΣF = 0</div>
-        <div class="small muted" style="margin-top:8px;">
-          Reakce v ose vyrovná součet tíhových sil (těla jsou v klidu).
+          Pokud se houpačka nehýbe, součet momentů okolo osy je nulový.
         </div>
       </div>
 
@@ -177,6 +232,9 @@
   const els = {
     massDog: document.getElementById('massDog'),
     massEl: document.getElementById('massEl'),
+    massDogIn: document.getElementById('massDogIn'),
+    massElIn: document.getElementById('massElIn'),
+
     len: document.getElementById('len'),
     xDog: document.getElementById('xDog'),
     xEl: document.getElementById('xEl'),
@@ -199,10 +257,26 @@
     boardGroup: document.getElementById('boardGroup'),
     dog: document.getElementById('dog'),
     elephant: document.getElementById('elephant'),
+
+    // úloha
+    newTask: document.getElementById('newTask'),
+    checkTask: document.getElementById('checkTask'),
+    taskText: document.getElementById('taskText'),
+    ans: document.getElementById('ans'),
+    taskResult: document.getElementById('taskResult'),
   };
+
+  let task = null; // { unknown: 'dog'|'el', target: number, tol: number, half: number }
 
   function clamp(v, min, max){ return Math.min(max, Math.max(min, v)); }
   function fmt(n, d=2){ return Number.isFinite(n) ? n.toFixed(d) : '–'; }
+  function rndInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+  function rndStep(min,max,step){
+    const kMin = Math.ceil(min/step);
+    const kMax = Math.floor(max/step);
+    const k = rndInt(kMin,kMax);
+    return k*step;
+  }
 
   function updateRangesByLength(L){
     const half = L/2;
@@ -216,16 +290,12 @@
   }
 
   function mapX(xMeters, half){
-    // -half => 150, +half => 670, střed 410
     return 410 + (xMeters / half) * 260;
-    // vykreslení měřítka
-const scale = document.getElementById('scale');
-scale.innerHTML = '';
-for (let i = -half; i <= half; i += 0.5) {
-  const x = mapX(i, half);
-  scale.innerHTML += `<text x="${x}" y="200" text-anchor="middle">${i.toFixed(1)}</text>`;
-}
+  }
 
+  function syncNumberInputs(){
+    if (document.activeElement !== els.massDogIn) els.massDogIn.value = els.massDog.value;
+    if (document.activeElement !== els.massElIn)  els.massElIn.value  = els.massEl.value;
   }
 
   function recalc(){
@@ -236,32 +306,24 @@ for (let i = -half; i <= half; i += 0.5) {
 
     updateRangesByLength(L);
 
-    let xDog = parseFloat(els.xDog.value);
-    let xEl  = parseFloat(els.xEl.value);
+    let xDog = clamp(parseFloat(els.xDog.value), -half, half);
+    let xEl  = clamp(parseFloat(els.xEl.value), -half, half);
 
-    xDog = clamp(xDog, -half, half);
-    xEl  = clamp(xEl, -half, half);
-
-    // síly
     const Fdog = mDog * g;
     const Fel  = mEl  * g;
 
-    // momenty se znaménkem
     const Mdog = Fdog * xDog;
     const Mel  = Fel  * xEl;
     const Msum = Mdog + Mel;
 
-    // „náklon“ pro vizualizaci (omezený)
-   const maxMoment = (mDog + mEl) * g * half;     // orientační maximum momentu
-const tilt = clamp((Msum / maxMoment) * 12, -12, 12);
+    const maxMoment = (mDog + mEl) * g * half * 0.12 + 1e-9;
+    const tilt = clamp(Math.tanh(Msum / maxMoment) * 18, -18, 18);
 
-    // rovnovážné vzdálenosti (na své straně)
     const dDog = Math.abs(xDog);
     const dEl  = Math.abs(xEl);
     const dElEq = mEl > 0 ? (mDog * dDog) / mEl : 0;
     const dDogEq = mDog > 0 ? (mEl * dEl) / mDog : 0;
 
-    // UI texty
     els.massDogVal.textContent = fmt(mDog,0);
     els.massElVal.textContent  = fmt(mEl,0);
     els.lenVal.textContent     = fmt(L,1);
@@ -289,15 +351,44 @@ const tilt = clamp((Msum / maxMoment) * 12, -12, 12);
       els.status.className = 'badge warn';
     }
 
-    // SVG: náklon prkna
     els.boardGroup.setAttribute('transform', `rotate(${tilt} 410 170)`);
 
-    // SVG: pozice zvířat
     const dogX = mapX(xDog, half);
     const elX  = mapX(xEl, half);
-    els.dog.setAttribute('transform', `translate(${dogX} 138)`);
-    els.elephant.setAttribute('transform', `translate(${elX} 140)`);
+    els.dog.setAttribute('transform', `translate(${dogX} 140)`);
+    els.elephant.setAttribute('transform', `translate(${elX} 142)`);
+
+    syncNumberInputs();
   }
+
+  function applyMassInput(which){
+    const isDog = (which === 'dog');
+    const inp = isDog ? els.massDogIn : els.massElIn;
+    const slider = isDog ? els.massDog : els.massEl;
+    const min = parseFloat(slider.min);
+    const max = parseFloat(slider.max);
+
+    const raw = inp.value.trim();
+    if (raw === "") return;
+
+    const n = Number(raw);
+    if (!Number.isFinite(n)) return;
+
+    const v = clamp(Math.round(n), min, max);
+    slider.value = String(v);
+    inp.value = String(v);
+    recalc();
+  }
+
+  els.massDogIn.addEventListener('input', () => applyMassInput('dog'));
+  els.massElIn.addEventListener('input', () => applyMassInput('el'));
+
+  els.massDogIn.addEventListener('blur', () => {
+    if (els.massDogIn.value.trim() === "") els.massDogIn.value = els.massDog.value;
+  });
+  els.massElIn.addEventListener('blur', () => {
+    if (els.massElIn.value.trim() === "") els.massElIn.value = els.massEl.value;
+  });
 
   ['input','change'].forEach(evt=>{
     els.massDog.addEventListener(evt, recalc);
@@ -307,38 +398,128 @@ const tilt = clamp((Msum / maxMoment) * 12, -12, 12);
     els.xEl.addEventListener(evt, recalc);
   });
 
-  recalc();
   function enableDrag(el, setter) {
-  let dragging = false;
+    let dragging = false;
 
-  el.addEventListener('mousedown', () => dragging = true);
-  window.addEventListener('mouseup', () => dragging = false);
+    el.addEventListener('mousedown', () => dragging = true);
+    window.addEventListener('mouseup', () => dragging = false);
 
-  window.addEventListener('mousemove', e => {
-    if (!dragging) return;
+    window.addEventListener('mousemove', e => {
+      if (!dragging) return;
 
-    const rect = el.ownerSVGElement.getBoundingClientRect();
-    const x = e.clientX - rect.left;
+      const rect = el.ownerSVGElement.getBoundingClientRect();
+      const x = e.clientX - rect.left;
 
-    const L = parseFloat(els.len.value);
-    const half = L / 2;
+      const L = parseFloat(els.len.value);
+      const half = L / 2;
 
-    const meters = ((x - 410) / 260) * half;
-    setter(clamp(meters, -half, half));
+      const meters = ((x - 410) / 260) * half;
+      setter(clamp(meters, -half, half));
+      recalc();
+    });
+  }
+
+  enableDrag(els.dog, v => els.xDog.value = v);
+  enableDrag(els.elephant, v => els.xEl.value = v);
+
+  // zamykání neznámého posuvníku
+  function lockUnknownSlider(lock){
+    // nejdřív vše odemknout (kvůli nové úloze)
+    els.xDog.disabled = false;
+    els.xEl.disabled  = false;
+
+    if (!task) return;
+
+    if (task.unknown === 'dog'){
+      els.xDog.disabled = lock;
+    } else {
+      els.xEl.disabled = lock;
+    }
+  }
+
+  function newTask(){
+    els.taskResult.textContent = '';
+    els.ans.value = '';
+
+    const L = rndStep(3.0, 8.0, 0.5);
+    els.len.value = L;
+    const half = L/2;
+
+    const mDog = rndInt(5, 60);
+    const mEl  = rndInt(300, 4000);
+
+    els.massDog.value = mDog;
+    els.massEl.value  = mEl;
+
+    const unknown = (Math.random() < 0.5) ? 'dog' : 'el';
+    const known = rndStep(Math.max(0.4, half*0.35), Math.max(0.6, half-0.2), 0.05);
+
+    let target;
+
+    if (unknown === 'dog'){
+      target = (mEl * known) / mDog;
+      els.xEl.value = +known;
+      els.xDog.value = -clamp(target, 0.05, half);
+
+      els.taskText.innerHTML =
+        `Slon má hmotnost <b>${mEl} kg</b> a sedí ve vzdálenosti <b>${known.toFixed(2)} m</b> od osy.<br>`+
+        `Pes má hmotnost <b>${mDog} kg</b>. Vypočítej, jak daleko od osy má sedět pes (dₚ), aby byla rovnováha.`;
+    } else {
+      target = (mDog * known) / mEl;
+      els.xDog.value = -known;
+      els.xEl.value = +clamp(target, 0.05, half);
+
+      els.taskText.innerHTML =
+        `Pes má hmotnost <b>${mDog} kg</b> a sedí ve vzdálenosti <b>${known.toFixed(2)} m</b> od osy.<br>`+
+        `Slon má hmotnost <b>${mEl} kg</b>. Vypočítej, jak daleko od osy má sedět slon (dₛ), aby byla rovnováha.`;
+    }
+
+    task = { unknown, target, tol: 0.02, half };
+
     recalc();
-  });
-}
+    lockUnknownSlider(true); // zamkneme neznámý posuvník
+  }
 
-enableDrag(els.dog, v => els.xDog.value = v);
-enableDrag(els.elephant, v => els.xEl.value = v);
+  function checkTask(){
+    if (!task){
+      els.taskResult.textContent = 'Nejdřív klikni na „Náhodná úloha“.';
+      els.taskResult.className = 'small muted';
+      return;
+    }
 
+    const raw = els.ans.value.trim();
+    if (raw === ''){
+      els.taskResult.textContent = 'Zadej výsledek (rameno v metrech).';
+      els.taskResult.className = 'small muted';
+      return;
+    }
+
+    const val = Number(raw);
+    if (!Number.isFinite(val)){
+      els.taskResult.textContent = 'Výsledek musí být číslo.';
+      els.taskResult.className = 'small muted';
+      return;
+    }
+
+    const v = clamp(val, 0, task.half);
+    const correct = clamp(task.target, 0, task.half);
+    const diff = Math.abs(v - correct);
+
+    if (diff <= task.tol){
+      els.taskResult.textContent = `✅ Správně! Správný výsledek je přibližně ${correct.toFixed(2)} m (tvoje chyba ${diff.toFixed(2)} m).`;
+      els.taskResult.className = 'small';
+    } else {
+      els.taskResult.textContent = `❌ Zatím ne. Správně je přibližně ${correct.toFixed(2)} m (tvoje chyba ${diff.toFixed(2)} m).`;
+      els.taskResult.className = 'small';
+    }
+
+    lockUnknownSlider(false); // po kontrole odemkneme
+  }
+
+  els.newTask.addEventListener('click', newTask);
+  els.checkTask.addEventListener('click', checkTask);
+
+  recalc();
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
