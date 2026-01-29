@@ -308,9 +308,34 @@ const tilt = clamp((Msum / maxMoment) * 12, -12, 12);
   });
 
   recalc();
+  function enableDrag(el, setter) {
+  let dragging = false;
+
+  el.addEventListener('mousedown', () => dragging = true);
+  window.addEventListener('mouseup', () => dragging = false);
+
+  window.addEventListener('mousemove', e => {
+    if (!dragging) return;
+
+    const rect = el.ownerSVGElement.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+
+    const L = parseFloat(els.len.value);
+    const half = L / 2;
+
+    const meters = ((x - 410) / 260) * half;
+    setter(clamp(meters, -half, half));
+    recalc();
+  });
+}
+
+enableDrag(els.dog, v => els.xDog.value = v);
+enableDrag(els.elephant, v => els.xEl.value = v);
+
 </script>
 </body>
 </html>
+
 
 
 
