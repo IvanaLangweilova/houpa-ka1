@@ -242,7 +242,8 @@
     const Msum = Mdog + Mel;
 
     // „náklon“ pro vizualizaci (omezený)
-    const tilt = clamp(Msum / 1500, -12, 12);
+   const maxMoment = (mDog + mEl) * g * half;     // orientační maximum momentu
+const tilt = clamp((Msum / maxMoment) * 12, -12, 12);
 
     // rovnovážné vzdálenosti (na své straně)
     const dDog = Math.abs(xDog);
@@ -300,6 +301,7 @@
 </script>
 </body>
 </html>
+
 
 
 
