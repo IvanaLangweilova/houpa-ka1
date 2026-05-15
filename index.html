@@ -1,525 +1,1291 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Páka – houpačka (pes × slon)</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Páka – houpačka a rovnováha</title>
+
   <style>
-    body { font-family: system-ui, Arial, sans-serif; margin: 20px; line-height: 1.35; }
-    h1 { margin: 0 0 8px; }
-    .muted { color: #666; }
-    .grid { display: grid; gap: 16px; grid-template-columns: 1fr; }
-    @media (min-width: 900px){ .grid { grid-template-columns: 1.1fr 0.9fr; } }
-    .card { border: 1px solid #ddd; border-radius: 14px; padding: 14px; background:#fff; }
-    label { display:block; font-size: 14px; margin: 10px 0 6px; }
-    input[type="range"]{ width: 100%; }
-    input:disabled{ opacity: 0.55; cursor: not-allowed; }
-    .row { display:flex; align-items:center; justify-content:space-between; gap: 12px; flex-wrap:wrap; }
-    .badge { display:inline-block; padding: 6px 10px; border-radius: 999px; border: 1px solid #ddd; font-size: 13px; background:#fafafa; }
-    .ok { background:#e8fff0; border-color:#b9f2c8; }
-    .warn{ background:#fff8e6; border-color:#ffe2a8; }
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; }
-    .small { font-size: 13px; }
-    svg { width: 100%; height: 260px; display:block; }
-    .two { display:grid; gap: 12px; grid-template-columns: 1fr; }
-    @media (min-width: 900px){ .two{ grid-template-columns: 1fr 1fr; } }
-
-    .sep { border:none; border-top:1px solid #eee; margin:14px 0; }
-
-    .massRow { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:6px; }
-    .massRow input[type="number"]{
-      width: 150px; padding: 8px; border: 1px solid #ddd; border-radius: 10px; background:#fff;
+    :root{
+      --bg1:#dbeafe;
+      --bg2:#dcfce7;
+      --bg3:#fef3c7;
+      --dark:#0f172a;
+      --muted:#475569;
+      --line:#cbd5e1;
+      --blue:#0284c7;
+      --green:#16a34a;
+      --orange:#ea580c;
+      --red:#dc2626;
+      --purple:#7c3aed;
     }
-    .chip { display:inline-block; padding:4px 8px; border:1px solid #ddd; border-radius:999px; background:#fff; font-size:12px; color:#555; }
 
-    .btnrow { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
-    button{ border:1px solid #ddd; background:#fff; padding:8px 10px; border-radius:10px; cursor:pointer; }
-    button:hover{ background:#fafafa; }
+    *{ box-sizing:border-box; }
 
-    .taskBox{ background:#fafafa; border:1px solid #eee; border-radius:14px; padding:12px; }
-    .taskGrid{ display:grid; gap:10px; grid-template-columns: 1fr; }
-    @media (min-width: 900px){ .taskGrid{ grid-template-columns: 1fr 1fr; } }
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:Arial, Helvetica, sans-serif;
+      color:var(--dark);
+      background:
+        radial-gradient(circle at top left, rgba(56,189,248,.25), transparent 34%),
+        radial-gradient(circle at top right, rgba(34,197,94,.22), transparent 30%),
+        linear-gradient(135deg,var(--bg1),var(--bg2),var(--bg3));
+    }
 
-    .taskInput{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:8px; }
-    .taskInput input{
-      width: 170px; padding: 8px; border: 1px solid #ddd; border-radius: 10px; background:#fff;
+    .page{
+      max-width:1450px;
+      margin:0 auto;
+      padding:24px;
+    }
+
+    header{
+      background:rgba(255,255,255,.95);
+      border:2px solid rgba(255,255,255,.95);
+      border-radius:28px;
+      padding:28px;
+      text-align:center;
+      margin-bottom:22px;
+      box-shadow:0 18px 40px rgba(15,23,42,.12);
+    }
+
+    h1{
+      margin:0 0 10px;
+      font-size:42px;
+      letter-spacing:.5px;
+      color:#075985;
+    }
+
+    .subtitle{
+      margin:0 auto;
+      max-width:1120px;
+      font-size:18px;
+      line-height:1.6;
+      color:var(--muted);
+    }
+
+    .author{
+      margin-top:14px;
+      font-weight:bold;
+      color:#334155;
+      font-size:15px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1.08fr .92fr;
+      gap:22px;
+      align-items:start;
+    }
+
+    .card{
+      background:rgba(255,255,255,.95);
+      border:1px solid rgba(255,255,255,.95);
+      border-radius:26px;
+      padding:22px;
+      box-shadow:0 16px 34px rgba(15,23,42,.10);
+    }
+
+    .card h2{
+      margin:0 0 16px;
+      font-size:25px;
+      color:#0f172a;
+    }
+
+    .scene{
+      background:linear-gradient(180deg,#eff6ff,#fefce8);
+      border:3px solid #93c5fd;
+      border-radius:24px;
+      padding:18px;
+      overflow:hidden;
+    }
+
+    .sceneTitle{
+      text-align:center;
+      font-size:20px;
+      font-weight:bold;
+      color:#0c4a6e;
+      margin-bottom:12px;
+    }
+
+    .visualBox{
+      position:relative;
+      height:420px;
+      background:
+        linear-gradient(180deg,#dbeafe 0%,#e0f2fe 52%,#dcfce7 52%,#bbf7d0 100%);
+      border:2px solid #bfdbfe;
+      border-radius:22px;
+      overflow:hidden;
+    }
+
+    .ground{
+      position:absolute;
+      left:0;
+      right:0;
+      bottom:0;
+      height:64px;
+      background:linear-gradient(180deg,#86efac,#22c55e);
+      z-index:1;
+    }
+
+    .pivot{
+      position:absolute;
+      left:50%;
+      bottom:64px;
+      transform:translateX(-50%);
+      width:0;
+      height:0;
+      border-left:52px solid transparent;
+      border-right:52px solid transparent;
+      border-bottom:118px solid #64748b;
+      z-index:3;
+      filter:drop-shadow(0 8px 8px rgba(15,23,42,.15));
+    }
+
+    .pivotLabel{
+      position:absolute;
+      left:50%;
+      bottom:180px;
+      transform:translateX(-50%);
+      background:white;
+      border:1px solid #cbd5e1;
+      padding:5px 10px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:bold;
+      color:#334155;
+      z-index:9;
+    }
+
+    .seesaw{
+      position:absolute;
+      left:50%;
+      top:205px;
+      width:82%;
+      height:28px;
+      transform:translateX(-50%) rotate(0deg);
+      transform-origin:center center;
+      transition:transform .45s ease;
+      z-index:8;
+    }
+
+    .beam{
+      position:absolute;
+      left:0;
+      right:0;
+      top:0;
+      height:28px;
+      border-radius:999px;
+      background:linear-gradient(90deg,#92400e,#f59e0b,#92400e);
+      box-shadow:0 9px 18px rgba(15,23,42,.18);
+      border:3px solid rgba(120,53,15,.45);
+    }
+
+    .centerDot{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%);
+      width:18px;
+      height:18px;
+      background:#0f172a;
+      opacity:.45;
+      border-radius:50%;
+      z-index:11;
+    }
+
+    .object{
+      position:absolute;
+      bottom:24px;
+      transform:translateX(-50%) rotate(0deg);
+      transform-origin:center bottom;
+      transition:left .15s ease;
+      z-index:12;
+      text-align:center;
+      min-width:80px;
+      cursor:grab;
+      user-select:none;
+      touch-action:none;
+    }
+
+    .object:active{
+      cursor:grabbing;
+    }
+
+    .object .icon{
+      font-size:58px;
+      line-height:1;
+      filter:drop-shadow(0 8px 4px rgba(15,23,42,.18));
+    }
+
+    .object .label{
+      display:inline-block;
+      margin-top:2px;
+      background:rgba(255,255,255,.96);
+      border:1px solid #cbd5e1;
+      border-radius:999px;
+      padding:4px 9px;
+      font-size:12px;
+      font-weight:bold;
+      color:#0f172a;
+      white-space:nowrap;
+      box-shadow:0 3px 8px rgba(15,23,42,.08);
+    }
+
+    .distanceLine{
+      position:absolute;
+      top:252px;
+      height:26px;
+      z-index:7;
+      border-top:3px dashed rgba(15,23,42,.28);
+      transition:left .35s ease, width .35s ease;
+    }
+
+    .distanceLine span{
+      position:absolute;
+      top:4px;
+      left:50%;
+      transform:translateX(-50%);
+      background:white;
+      border:1px solid #cbd5e1;
+      border-radius:999px;
+      padding:3px 8px;
+      font-size:12px;
+      font-weight:bold;
+      color:#334155;
+      white-space:nowrap;
+    }
+
+    .statusBox{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:12px;
+    }
+
+    .stat{
+      border-radius:18px;
+      padding:14px;
+      color:white;
+      min-height:96px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      box-shadow:0 10px 22px rgba(15,23,42,.10);
+    }
+
+    .stat:nth-child(1){background:linear-gradient(135deg,#2563eb,#0284c7);}
+    .stat:nth-child(2){background:linear-gradient(135deg,#16a34a,#0f766e);}
+    .stat:nth-child(3){background:linear-gradient(135deg,#ea580c,#dc2626);}
+
+    .stat .name{
+      font-size:14px;
+      opacity:.95;
+    }
+
+    .stat .val{
+      font-size:21px;
+      font-weight:bold;
+      margin-top:8px;
+    }
+
+    .resultBanner{
+      margin-top:14px;
+      background:#020617;
+      color:#22c55e;
+      border-radius:18px;
+      padding:18px;
+      text-align:center;
+      font-size:22px;
+      font-weight:bold;
+      box-shadow:inset 0 0 20px rgba(34,197,94,.22);
+      line-height:1.4;
+    }
+
+    label{
+      display:block;
+      font-weight:bold;
+      margin:10px 0 7px;
+      font-size:15px;
+    }
+
+    input, select{
+      width:100%;
+      border:2px solid var(--line);
+      border-radius:14px;
+      background:white;
+      padding:12px 14px;
+      font-size:16px;
+      outline:none;
+    }
+
+    input:focus, select:focus{
+      border-color:#0284c7;
+      box-shadow:0 0 0 4px rgba(2,132,199,.12);
+    }
+
+    input[type="range"]{
+      padding:0;
+      border:none;
+      box-shadow:none;
+    }
+
+    .inputRow{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-bottom:12px;
+    }
+
+    .miniPanel{
+      background:#f8fafc;
+      border:1px solid #e2e8f0;
+      border-radius:18px;
+      padding:14px;
+      margin-bottom:14px;
+    }
+
+    .sliderInfo{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      color:#0c4a6e;
+      font-weight:bold;
+      font-size:14px;
+      margin-bottom:6px;
+    }
+
+    .btnRow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:9px;
+      margin-top:12px;
+    }
+
+    button{
+      border:none;
+      border-radius:999px;
+      padding:10px 14px;
+      font-size:14px;
+      font-weight:bold;
+      cursor:pointer;
+      background:#e0f2fe;
+      color:#075985;
+      transition:.2s;
+    }
+
+    button:hover{
+      transform:translateY(-1px);
+      background:#bae6fd;
+    }
+
+    .formulaGrid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:14px;
+    }
+
+    .formulaBox{
+      background:#fff7ed;
+      border:2px solid #fed7aa;
+      border-radius:18px;
+      padding:14px;
+      line-height:1.55;
+      font-size:15px;
+    }
+
+    .formulaBox strong{
+      color:#7c2d12;
+    }
+
+    .explainBox{
+      margin-top:14px;
+      background:#eff6ff;
+      border:2px solid #bfdbfe;
+      border-radius:18px;
+      padding:15px;
+      line-height:1.6;
+      color:#334155;
+    }
+
+    .symbols{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .symbolItem{
+      background:white;
+      border:1px solid #dbeafe;
+      border-radius:14px;
+      padding:10px;
+      font-size:14px;
+      line-height:1.45;
+    }
+
+    .taskBox{
+      margin-top:16px;
+      background:#f0fdf4;
+      border:2px solid #bbf7d0;
+      border-radius:20px;
+      padding:16px;
+      line-height:1.55;
+    }
+
+    .taskText{
+      background:white;
+      border:1px solid #dcfce7;
+      border-radius:16px;
+      padding:12px;
+      margin-top:10px;
+      color:#334155;
+    }
+
+    .taskAnswer{
+      display:grid;
+      grid-template-columns:1fr auto auto;
+      gap:10px;
+      align-items:end;
+      margin-top:10px;
+    }
+
+    .taskResult{
+      margin-top:10px;
+      font-weight:bold;
+      color:#166534;
+    }
+
+    .small{
+      font-size:13px;
+      color:#64748b;
+      line-height:1.5;
+    }
+
+    footer{
+      text-align:center;
+      color:#475569;
+      margin-top:18px;
+      font-size:14px;
+    }
+
+    @media (max-width:1150px){
+      .grid{
+        grid-template-columns:1fr;
+      }
+
+      .statusBox{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width:760px){
+      .page{padding:14px;}
+      h1{font-size:32px;}
+      .subtitle{font-size:16px;}
+      .visualBox{height:380px;}
+      .seesaw{width:92%;}
+      .object .icon{font-size:42px;}
+      .object .label{font-size:11px;}
+      .inputRow,.formulaGrid,.symbols,.taskAnswer{
+        grid-template-columns:1fr;
+      }
     }
   </style>
 </head>
+
 <body>
-  <h1>Páka – houpací houpačka (pes × slon)</h1>
+  <div class="page">
+    <header>
+      <h1>PÁKA – HOUPAČKA A ROVNOVÁHA</h1>
+      <p class="subtitle">
+        Páka je jednoduchý stroj. U páky nerozhoduje jen hmotnost, ale také vzdálenost od osy otáčení.
+        Lehčí těleso může vyvážit těžší těleso, když je dál od středu.
+      </p>
+      <p class="subtitle" style="margin-top:10px;">
+        <strong>K čemu je to dobré?</strong> Páku najdeme u houpačky, nůžek, kleští, páčidla,
+        otvíráku, kliky u dveří nebo zahradního kolečka. Delší rameno páky pomáhá zvedat těžší věci menší silou.
+      </p>
+      <div class="author">Autorka: Mgr. Ivana Langweilová – ILang</div>
+    </header>
 
-  <div class="muted">
-    Páka ukazuje, že <b>nezáleží jen na hmotnosti</b>, ale i na <b>vzdálenosti od osy</b> (rameni páky).
-    Proto může lehčí těleso převážit těžší, když je dál od středu.
-    <br><br>
-    <b>Kde to využiju v běžném životě:</b> nůžky, kleště, páčidlo, otvírák, klíč na šrouby, kolečko/vozík nebo houpačka –
-    delší rameno páky znamená menší potřebnou sílu.
-  </div>
+    <main class="grid">
+      <section class="card">
+        <h2>Interaktivní simulace páky</h2>
 
-  <div class="grid" style="margin-top:16px;">
-    <div class="card">
-      <div class="row">
-        <div id="status" class="badge">…</div>
-        <div class="badge mono">ΣM = <span id="msum">0</span> N·m</div>
-      </div>
+        <div class="scene">
+          <div class="sceneTitle">SLEDUJ, KTERÁ STRANA PŘEVÁŽÍ</div>
+          <div class="small" style="text-align:center;margin:-4px 0 10px;color:#475569;">
+            Tělesa na houpačce můžeš posouvat myší nebo prstem. Změní se tím rameno páky.
+          </div>
 
-      <div style="margin-top:12px; border:1px solid #eee; border-radius:14px; padding:12px; background:#fafafa;">
-        <svg viewBox="0 0 820 320" aria-label="Houpačka">
-          <line x1="40" y1="280" x2="780" y2="280" stroke="black" stroke-width="4" opacity="0.15"></line>
-          <polygon points="410,280 360,280 410,170 460,280" fill="black" opacity="0.08"></polygon>
-          <circle cx="410" cy="170" r="10" fill="black" opacity="0.2"></circle>
+          <div class="visualBox">
+            <div class="ground"></div>
+            <div class="pivot"></div>
+            <div class="pivotLabel">osa otáčení</div>
 
-          <g id="boardGroup">
-            <rect x="150" y="155" width="520" height="30" rx="14" fill="black" opacity="0.12"></rect>
+            <div class="distanceLine" id="leftDistance"><span id="leftDistanceText">r₁</span></div>
+            <div class="distanceLine" id="rightDistance"><span id="rightDistanceText">r₂</span></div>
 
-            <!-- PES -->
-            <g id="dog" transform="translate(250 140)" style="cursor:grab;">
-              <ellipse cx="0" cy="0" rx="22" ry="14" fill="black" opacity="0.55"></ellipse>
-              <circle cx="-22" cy="-6" r="10" fill="black" opacity="0.55"></circle>
-              <ellipse cx="-30" cy="-4" rx="6" ry="4" fill="black" opacity="0.55"></ellipse>
-              <path d="M-26,-18 C-30,-26 -18,-26 -20,-16 Z" fill="black" opacity="0.55"></path>
-              <path d="M-18,-18 C-20,-28 -8,-26 -12,-16 Z" fill="black" opacity="0.55"></path>
-              <path d="M20,-2 C32,-10 34,6 22,6 Z" fill="black" opacity="0.55"></path>
-              <rect x="-8" y="10" width="6" height="10" rx="2" fill="black" opacity="0.45"></rect>
-              <rect x="4" y="10" width="6" height="10" rx="2" fill="black" opacity="0.45"></rect>
-              <text x="0" y="36" text-anchor="middle" font-size="12" fill="black" opacity="0.7">pes</text>
-            </g>
+            <div class="seesaw" id="seesaw">
+              <div class="beam"></div>
+              <div class="centerDot"></div>
 
-            <!-- SLON -->
-            <g id="elephant" transform="translate(570 142)" style="cursor:grab;">
-              <ellipse cx="0" cy="0" rx="26" ry="16" fill="black" opacity="0.60"></ellipse>
-              <circle cx="18" cy="-6" r="12" fill="black" opacity="0.60"></circle>
-              <ellipse cx="10" cy="-4" rx="10" ry="9" fill="black" opacity="0.45"></ellipse>
-              <path d="M30,-4 C42,-2 42,14 30,12 C24,11 24,4 30,-4 Z" fill="black" opacity="0.60"></path>
-              <path d="M22,2 C30,2 26,10 20,8 Z" fill="black" opacity="0.35"></path>
-              <rect x="-14" y="10" width="8" height="12" rx="2" fill="black" opacity="0.45"></rect>
-              <rect x="2" y="10" width="8" height="12" rx="2" fill="black" opacity="0.45"></rect>
-              <text x="0" y="36" text-anchor="middle" font-size="12" fill="black" opacity="0.7">slon</text>
-            </g>
-          </g>
+              <div class="object" id="leftObject">
+                <div class="icon" id="leftIcon">🐕</div>
+                <div class="label" id="leftLabel">pes</div>
+              </div>
 
-          <text x="170" y="310" font-size="12" fill="black" opacity="0.55">levá strana (x &lt; 0)</text>
-          <text x="560" y="310" font-size="12" fill="black" opacity="0.55">pravá strana (x &gt; 0)</text>
-        </svg>
-      </div>
-
-      <div class="two" style="margin-top:12px;">
-        <div class="card">
-          <b>Výsledky</b>
-          <div class="small muted" style="margin-top:8px;">
-            Tíha psa Fₚ: <b><span id="fdog"></span></b> N<br/>
-            Tíha slona Fₛ: <b><span id="fel"></span></b> N<br/>
-            <hr style="border:none;border-top:1px solid #eee;margin:10px 0;">
-            Moment psa Mₚ = Fₚ·xₚ: <b><span id="mdog"></span></b> N·m<br/>
-            Moment slona Mₛ = Fₛ·xₛ: <b><span id="mel"></span></b> N·m<br/>
+              <div class="object" id="rightObject">
+                <div class="icon" id="rightIcon">🐘</div>
+                <div class="label" id="rightLabel">slon</div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="card">
-          <b>Rychlé vyvážení</b>
-          <div class="small muted" style="margin-top:8px;">
-            Pro vyvážení:<br/>
-            <span class="mono">mₚ·dₚ = mₛ·dₛ</span><br/><br/>
-            Slon má být od osy: <b><span id="dElEq"></span></b> m<br/>
-            Pes má být od osy: <b><span id="dDogEq"></span></b> m
+        <div class="statusBox">
+          <div class="stat">
+            <div class="name">Levá strana</div>
+            <div class="val" id="leftMomentText">0 kg·m</div>
+            <div class="name" id="leftForceText">F₁ = 0 N</div>
+          </div>
+
+          <div class="stat">
+            <div class="name">Pravá strana</div>
+            <div class="val" id="rightMomentText">0 kg·m</div>
+            <div class="name" id="rightForceText">F₂ = 0 N</div>
+          </div>
+
+          <div class="stat">
+            <div class="name">Rozdíl momentů</div>
+            <div class="val" id="differenceText">0 kg·m</div>
+            <div class="name" id="differenceForceText">0 N·m</div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <div class="card">
-      <b>Nastavení parametrů</b>
-
-      <label>Hmotnost psa mₚ: <b><span id="massDogVal"></span></b> kg</label>
-      <div class="massRow">
-        <span class="chip">Zadej (kg):</span>
-        <input id="massDogIn" type="number" min="1" max="150" step="1" value="25">
-      </div>
-      <input id="massDog" type="range" min="1" max="150" step="1" value="25">
-
-      <label style="margin-top:12px;">Hmotnost slona mₛ: <b><span id="massElVal"></span></b> kg</label>
-      <div class="massRow">
-        <span class="chip">Zadej (kg):</span>
-        <input id="massElIn" type="number" min="1" max="6000" step="1" value="800">
-      </div>
-      <input id="massEl" type="range" min="1" max="6000" step="1" value="800">
-
-      <label>Délka prkna L: <b><span id="lenVal"></span></b> m</label>
-      <input id="len" type="range" min="1.5" max="10" step="0.1" value="4">
-
-      <label>Pozice psa xₚ (od osy): <b><span id="xDogVal"></span></b> m</label>
-      <input id="xDog" type="range" min="-2" max="2" step="0.05" value="-1.2">
-
-      <label>Pozice slona xₛ (od osy): <b><span id="xElVal"></span></b> m</label>
-      <input id="xEl" type="range" min="-2" max="2" step="0.05" value="1.2">
-
-      <hr class="sep">
-
-      <!-- ÚLOHA PRO ŽÁKY -->
-      <div class="taskBox">
-        <b>Úloha pro žáky</b>
-        <div class="small muted" style="margin-top:6px;">
-          Vygeneruj úlohu a dopočítej neznámé rameno tak, aby platilo <span class="mono">mₚ·dₚ = mₛ·dₛ</span>.
-          Po vygenerování je <b>neznámý posuvník zamčený</b>.
+        <div class="resultBanner" id="resultBanner">
+          Výsledek se zobrazí zde.
         </div>
 
-        <div class="btnrow">
-          <button id="newTask">Náhodná úloha</button>
-          <button id="checkTask">Zkontrolovat</button>
+        <div class="formulaGrid">
+          <div class="formulaBox">
+            <strong>Výpočet levé strany:</strong><br>
+            <span id="leftCalc">M₁ = m₁ · r₁</span>
+          </div>
+          <div class="formulaBox">
+            <strong>Výpočet pravé strany:</strong><br>
+            <span id="rightCalc">M₂ = m₂ · r₂</span>
+          </div>
         </div>
 
-        <div class="taskGrid" style="margin-top:10px;">
-          <div class="small">
-            <b>Zadané:</b><br>
-            <span id="taskText" class="muted">Klikni na „Náhodná úloha“.</span>
+        <div class="taskBox">
+          <strong>Úloha pro žáky</strong><br>
+          Vygeneruj úlohu a dopočítej neznámé rameno páky tak, aby byla houpačka v rovnováze.
+
+          <div class="btnRow">
+            <button id="newTaskBtn">Náhodná úloha</button>
+            <button id="checkTaskBtn">Zkontrolovat odpověď</button>
+            <button id="showTaskBtn">Ukázat správnou polohu</button>
+          </div>
+
+          <div class="taskText" id="taskText">
+            Klikni na „Náhodná úloha“.
+          </div>
+
+          <div class="taskAnswer">
+            <div>
+              <label for="taskAnswerInput">Odpověď žáka – rameno v metrech:</label>
+              <input id="taskAnswerInput" type="number" step="0.01" placeholder="např. 1,25">
+            </div>
+            <button id="clearTaskBtn">Vymazat</button>
+          </div>
+
+          <div class="taskResult" id="taskResult"></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Nastavení a výpočty</h2>
+
+        <div class="miniPanel">
+          <label for="presetSelect">Vyber ukázku:</label>
+          <select id="presetSelect">
+            <option value="dogElephant">Pes × slon</option>
+            <option value="children">Dítě × dítě</option>
+            <option value="childAdult">Dítě × dospělý</option>
+            <option value="childWeight">Dítě × závaží</option>
+            <option value="weights">Závaží × závaží</option>
+            <option value="crowbar">Páčidlo × kámen</option>
+          </select>
+
+          <div class="btnRow">
+            <button data-preset="dogElephant">Pes × slon</button>
+            <button data-preset="children">Děti</button>
+            <button data-preset="childWeight">Dítě × závaží</button>
+            <button data-preset="weights">Závaží</button>
+            <button data-preset="crowbar">Páčidlo</button>
+          </div>
+        </div>
+
+        <div class="inputRow">
+          <div>
+            <label for="leftType">Levá strana:</label>
+            <select id="leftType">
+              <option value="dog">pes</option>
+              <option value="elephant">slon</option>
+              <option value="child">dítě</option>
+              <option value="adult">dospělý</option>
+              <option value="weight">závaží</option>
+              <option value="stone">kámen</option>
+            </select>
           </div>
 
           <div>
-            <div class="small"><b>Odpověď žáka:</b></div>
-            <div class="taskInput">
-              <span class="chip">Neznámé rameno (m):</span>
-              <input id="ans" type="number" step="0.01" placeholder="např. 1.25">
-            </div>
-            <div id="taskResult" class="small muted" style="margin-top:8px;"></div>
+            <label for="rightType">Pravá strana:</label>
+            <select id="rightType">
+              <option value="elephant">slon</option>
+              <option value="dog">pes</option>
+              <option value="child">dítě</option>
+              <option value="adult">dospělý</option>
+              <option value="weight">závaží</option>
+              <option value="stone">kámen</option>
+            </select>
           </div>
         </div>
-      </div>
 
-      <hr class="sep">
+        <div class="miniPanel">
+          <div class="inputRow">
+            <div>
+              <label for="leftMassInput">Hmotnost vlevo m₁ (kg):</label>
+              <input id="leftMassInput" type="number" min="1" max="6000" step="1" value="25">
+            </div>
 
-      <b>Vzorce a vysvětlení (statika)</b>
-      <div class="card" style="margin-top:10px;">
-        <div class="muted">Moment síly:</div>
-        <div class="mono" style="margin-top:6px;">
-          M = F · r, &nbsp;F = m · g<br/>
-          ⇒ M = (m · g) · r
-        </div>
-        <div class="small muted" style="margin-top:8px;">
-          r (nebo d) je rameno páky – vzdálenost od osy.
-        </div>
-      </div>
+            <div>
+              <label for="rightMassInput">Hmotnost vpravo m₂ (kg):</label>
+              <input id="rightMassInput" type="number" min="1" max="6000" step="1" value="400">
+            </div>
+          </div>
 
-      <div class="card" style="margin-top:10px;">
-        <div class="muted">Podmínka rovnováhy okolo osy:</div>
-        <div class="mono" style="margin-top:6px;">
-          ΣM = 0<br/>
-          (mₚ · g · dₚ) = (mₛ · g · dₛ)<br/>
-          mₚ · dₚ = mₛ · dₛ  (g se zkrátí)
-        </div>
-        <div class="small muted" style="margin-top:8px;">
-          Pokud se houpačka nehýbe, součet momentů okolo osy je nulový.
-        </div>
-      </div>
+          <div class="sliderInfo">
+            <span>m₁ vlevo</span>
+            <span id="leftMassValue">25 kg</span>
+          </div>
+          <input id="leftMassSlider" type="range" min="1" max="6000" step="1" value="25">
 
-      <div class="card" style="margin-top:10px;background:#fafafa;">
-        <b>Popis veličin</b>
-        <div class="small muted" style="margin-top:8px;">
-          mₚ, mₛ … hmotnost psa / slona (kg)<br/>
-          g … tíhové zrychlení (≈ 9,81 m·s⁻²)<br/>
-          F … tíhová síla (N), F = m·g<br/>
-          d nebo r … rameno páky (m)<br/>
-          M … moment síly (N·m), M = F·r<br/>
-          ΣM … součet momentů okolo osy (rovnováha: ΣM = 0)
+          <div class="sliderInfo" style="margin-top:12px;">
+            <span>m₂ vpravo</span>
+            <span id="rightMassValue">400 kg</span>
+          </div>
+          <input id="rightMassSlider" type="range" min="1" max="6000" step="1" value="400">
         </div>
-      </div>
-    </div>
+
+        <div class="miniPanel">
+          <div class="sliderInfo">
+            <span>Délka prkna L</span>
+            <span id="boardLengthValue">5,0 m</span>
+          </div>
+          <input id="boardLengthSlider" type="range" min="2" max="10" step="0.1" value="5">
+
+          <div class="sliderInfo" style="margin-top:12px;">
+            <span>Rameno vlevo r₁</span>
+            <span id="leftArmValue">2,0 m</span>
+          </div>
+          <input id="leftArmSlider" type="range" min="0.1" max="2.5" step="0.05" value="2">
+
+          <div class="sliderInfo" style="margin-top:12px;">
+            <span>Rameno vpravo r₂</span>
+            <span id="rightArmValue">0,125 m</span>
+          </div>
+          <input id="rightArmSlider" type="range" min="0.1" max="2.5" step="0.05" value="0.125">
+        </div>
+
+        <div class="explainBox">
+          <strong>Co je důležité?</strong><br>
+          Moment síly závisí na síle a na vzdálenosti od osy. Proto nestačí vědět jen to,
+          kdo je těžší. Důležité je také to, jak daleko sedí od středu.
+        </div>
+
+        <div class="formulaGrid">
+          <div class="formulaBox">
+            <strong>Moment síly:</strong><br>
+            M = F · r<br>
+            F = m · g<br>
+            M = m · g · r
+          </div>
+
+          <div class="formulaBox">
+            <strong>Rovnováha páky:</strong><br>
+            M₁ = M₂<br>
+            m₁ · g · r₁ = m₂ · g · r₂<br>
+            m₁ · r₁ = m₂ · r₂
+          </div>
+        </div>
+
+        <div class="explainBox">
+          <strong>Vysvětlivky:</strong>
+          <div class="symbols">
+            <div class="symbolItem"><strong>m</strong> – hmotnost tělesa, jednotka kg</div>
+            <div class="symbolItem"><strong>F</strong> – síla, jednotka N</div>
+            <div class="symbolItem"><strong>r nebo d</strong> – rameno páky, vzdálenost od osy v m</div>
+            <div class="symbolItem"><strong>M</strong> – moment síly, jednotka N·m</div>
+            <div class="symbolItem"><strong>g</strong> – tíhové zrychlení, přibližně 9,81 m/s²</div>
+            <div class="symbolItem"><strong>ΣM</strong> – součet momentů, v rovnováze je 0</div>
+          </div>
+        </div>
+
+        <div class="explainBox">
+          <strong>Příklad s jednotkami:</strong><br>
+          Dítě má hmotnost <strong>30 kg</strong> a sedí ve vzdálenosti <strong>2 m</strong> od osy.
+          Dospělý má hmotnost <strong>60 kg</strong>. Chceme zjistit, jak daleko od osy má sedět dospělý,
+          aby byla houpačka v rovnováze.
+          <br><br>
+
+          <strong>Vztah pro rovnováhu:</strong><br>
+          m₁ · r₁ = m₂ · r₂
+          <br><br>
+
+          <strong>Dosazení čísel:</strong><br>
+          30 kg · 2 m = 60 kg · r₂
+          <br>
+          60 kg·m = 60 kg · r₂
+          <br>
+          r₂ = 60 kg·m / 60 kg
+          <br>
+          r₂ = <strong>1 m</strong>
+          <br><br>
+
+          <strong>Výsledek:</strong><br>
+          Dospělý musí sedět <strong>1 m od osy</strong>, aby byla páka v rovnováze.
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      Webová učební pomůcka pro výuku páky, momentu síly a rovnováhy.
+    </footer>
   </div>
 
-<script>
-  const g = 9.81;
+  <script>
+    const g = 9.81;
 
-  const els = {
-    massDog: document.getElementById('massDog'),
-    massEl: document.getElementById('massEl'),
-    massDogIn: document.getElementById('massDogIn'),
-    massElIn: document.getElementById('massElIn'),
+    const objectData = {
+      dog: { label:"pes", icon:"🐕", mass:25 },
+      elephant: { label:"slon", icon:"🐘", mass:400 },
+      child: { label:"dítě", icon:"🧒", mass:30 },
+      adult: { label:"dospělý", icon:"🧍", mass:70 },
+      weight: { label:"závaží", icon:"🏋️", mass:50 },
+      stone: { label:"kámen", icon:"🪨", mass:120 }
+    };
 
-    len: document.getElementById('len'),
-    xDog: document.getElementById('xDog'),
-    xEl: document.getElementById('xEl'),
+    const presets = {
+      dogElephant: {
+        leftType:"dog", rightType:"elephant",
+        leftMass:25, rightMass:400,
+        boardLength:5, leftArm:2, rightArm:0.125
+      },
+      children: {
+        leftType:"child", rightType:"child",
+        leftMass:30, rightMass:30,
+        boardLength:5, leftArm:1.5, rightArm:1.5
+      },
+      childAdult: {
+        leftType:"child", rightType:"adult",
+        leftMass:30, rightMass:60,
+        boardLength:5, leftArm:2, rightArm:1
+      },
+      childWeight: {
+        leftType:"child", rightType:"weight",
+        leftMass:35, rightMass:70,
+        boardLength:5, leftArm:2, rightArm:1
+      },
+      weights: {
+        leftType:"weight", rightType:"weight",
+        leftMass:20, rightMass:40,
+        boardLength:5, leftArm:2, rightArm:1
+      },
+      crowbar: {
+        leftType:"adult", rightType:"stone",
+        leftMass:70, rightMass:280,
+        boardLength:6, leftArm:2.4, rightArm:0.6
+      }
+    };
 
-    massDogVal: document.getElementById('massDogVal'),
-    massElVal: document.getElementById('massElVal'),
-    lenVal: document.getElementById('lenVal'),
-    xDogVal: document.getElementById('xDogVal'),
-    xElVal: document.getElementById('xElVal'),
+    const els = {
+      presetSelect: document.getElementById("presetSelect"),
 
-    status: document.getElementById('status'),
-    msum: document.getElementById('msum'),
-    fdog: document.getElementById('fdog'),
-    fel: document.getElementById('fel'),
-    mdog: document.getElementById('mdog'),
-    mel: document.getElementById('mel'),
-    dElEq: document.getElementById('dElEq'),
-    dDogEq: document.getElementById('dDogEq'),
+      leftType: document.getElementById("leftType"),
+      rightType: document.getElementById("rightType"),
 
-    boardGroup: document.getElementById('boardGroup'),
-    dog: document.getElementById('dog'),
-    elephant: document.getElementById('elephant'),
+      leftMassInput: document.getElementById("leftMassInput"),
+      rightMassInput: document.getElementById("rightMassInput"),
+      leftMassSlider: document.getElementById("leftMassSlider"),
+      rightMassSlider: document.getElementById("rightMassSlider"),
+      leftMassValue: document.getElementById("leftMassValue"),
+      rightMassValue: document.getElementById("rightMassValue"),
 
-    // úloha
-    newTask: document.getElementById('newTask'),
-    checkTask: document.getElementById('checkTask'),
-    taskText: document.getElementById('taskText'),
-    ans: document.getElementById('ans'),
-    taskResult: document.getElementById('taskResult'),
-  };
+      boardLengthSlider: document.getElementById("boardLengthSlider"),
+      boardLengthValue: document.getElementById("boardLengthValue"),
+      leftArmSlider: document.getElementById("leftArmSlider"),
+      rightArmSlider: document.getElementById("rightArmSlider"),
+      leftArmValue: document.getElementById("leftArmValue"),
+      rightArmValue: document.getElementById("rightArmValue"),
 
-  let task = null; // { unknown: 'dog'|'el', target: number, tol: number, half: number }
+      seesaw: document.getElementById("seesaw"),
+      leftObject: document.getElementById("leftObject"),
+      rightObject: document.getElementById("rightObject"),
+      leftIcon: document.getElementById("leftIcon"),
+      rightIcon: document.getElementById("rightIcon"),
+      leftLabel: document.getElementById("leftLabel"),
+      rightLabel: document.getElementById("rightLabel"),
 
-  function clamp(v, min, max){ return Math.min(max, Math.max(min, v)); }
-  function fmt(n, d=2){ return Number.isFinite(n) ? n.toFixed(d) : '–'; }
-  function rndInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
-  function rndStep(min,max,step){
-    const kMin = Math.ceil(min/step);
-    const kMax = Math.floor(max/step);
-    const k = rndInt(kMin,kMax);
-    return k*step;
-  }
+      leftDistance: document.getElementById("leftDistance"),
+      rightDistance: document.getElementById("rightDistance"),
+      leftDistanceText: document.getElementById("leftDistanceText"),
+      rightDistanceText: document.getElementById("rightDistanceText"),
 
-  function updateRangesByLength(L){
-    const half = L/2;
-    els.xDog.min = (-half).toFixed(2);
-    els.xDog.max = (half).toFixed(2);
-    els.xEl.min = (-half).toFixed(2);
-    els.xEl.max = (half).toFixed(2);
+      leftMomentText: document.getElementById("leftMomentText"),
+      rightMomentText: document.getElementById("rightMomentText"),
+      differenceText: document.getElementById("differenceText"),
+      leftForceText: document.getElementById("leftForceText"),
+      rightForceText: document.getElementById("rightForceText"),
+      differenceForceText: document.getElementById("differenceForceText"),
+      resultBanner: document.getElementById("resultBanner"),
+      leftCalc: document.getElementById("leftCalc"),
+      rightCalc: document.getElementById("rightCalc"),
 
-    els.xDog.value = clamp(parseFloat(els.xDog.value), -half, half);
-    els.xEl.value = clamp(parseFloat(els.xEl.value), -half, half);
-  }
+      newTaskBtn: document.getElementById("newTaskBtn"),
+      checkTaskBtn: document.getElementById("checkTaskBtn"),
+      showTaskBtn: document.getElementById("showTaskBtn"),
+      clearTaskBtn: document.getElementById("clearTaskBtn"),
+      taskText: document.getElementById("taskText"),
+      taskAnswerInput: document.getElementById("taskAnswerInput"),
+      taskResult: document.getElementById("taskResult")
+    };
 
-  function mapX(xMeters, half){
-    return 410 + (xMeters / half) * 260;
-  }
+    let currentTask = null;
 
-  function syncNumberInputs(){
-    if (document.activeElement !== els.massDogIn) els.massDogIn.value = els.massDog.value;
-    if (document.activeElement !== els.massElIn)  els.massElIn.value  = els.massEl.value;
-  }
-
-  function recalc(){
-    const mDog = parseFloat(els.massDog.value);
-    const mEl  = parseFloat(els.massEl.value);
-    const L    = parseFloat(els.len.value);
-    const half = L/2;
-
-    updateRangesByLength(L);
-
-    let xDog = clamp(parseFloat(els.xDog.value), -half, half);
-    let xEl  = clamp(parseFloat(els.xEl.value), -half, half);
-
-    const Fdog = mDog * g;
-    const Fel  = mEl  * g;
-
-    const Mdog = Fdog * xDog;
-    const Mel  = Fel  * xEl;
-    const Msum = Mdog + Mel;
-
-    const maxMoment = (mDog + mEl) * g * half * 0.12 + 1e-9;
-    const tilt = clamp(Math.tanh(Msum / maxMoment) * 18, -18, 18);
-
-    const dDog = Math.abs(xDog);
-    const dEl  = Math.abs(xEl);
-    const dElEq = mEl > 0 ? (mDog * dDog) / mEl : 0;
-    const dDogEq = mDog > 0 ? (mEl * dEl) / mDog : 0;
-
-    els.massDogVal.textContent = fmt(mDog,0);
-    els.massElVal.textContent  = fmt(mEl,0);
-    els.lenVal.textContent     = fmt(L,1);
-    els.xDogVal.textContent    = fmt(xDog,2);
-    els.xElVal.textContent     = fmt(xEl,2);
-
-    els.fdog.textContent = fmt(Fdog,1);
-    els.fel.textContent  = fmt(Fel,1);
-    els.mdog.textContent = fmt(Mdog,1);
-    els.mel.textContent  = fmt(Mel,1);
-    els.msum.textContent = fmt(Msum,1);
-
-    els.dElEq.textContent  = fmt(dElEq,3);
-    els.dDogEq.textContent = fmt(dDogEq,3);
-
-    const eps = 1e-6;
-    if (Math.abs(Msum) < eps){
-      els.status.textContent = 'Rovnováha (houpačka je vyvážená)';
-      els.status.className = 'badge ok';
-    } else if (Msum > 0){
-      els.status.textContent = 'Převažuje pravá strana (slon jde dolů)';
-      els.status.className = 'badge warn';
-    } else {
-      els.status.textContent = 'Převažuje levá strana (pes jde dolů)';
-      els.status.className = 'badge warn';
+    function format(n, decimals = 2){
+      return new Intl.NumberFormat("cs-CZ", {
+        maximumFractionDigits: decimals,
+        minimumFractionDigits: 0
+      }).format(n);
     }
 
-    els.boardGroup.setAttribute('transform', `rotate(${tilt} 410 170)`);
+    function clamp(value, min, max){
+      return Math.max(min, Math.min(max, value));
+    }
 
-    const dogX = mapX(xDog, half);
-    const elX  = mapX(xEl, half);
-    els.dog.setAttribute('transform', `translate(${dogX} 140)`);
-    els.elephant.setAttribute('transform', `translate(${elX} 142)`);
+    function readNumber(input, fallback){
+      const value = parseFloat(String(input.value).replace(",", "."));
+      return Number.isFinite(value) ? value : fallback;
+    }
 
-    syncNumberInputs();
-  }
+    function setMass(side, value){
+      const v = clamp(value, 1, 6000);
 
-  function applyMassInput(which){
-    const isDog = (which === 'dog');
-    const inp = isDog ? els.massDogIn : els.massElIn;
-    const slider = isDog ? els.massDog : els.massEl;
-    const min = parseFloat(slider.min);
-    const max = parseFloat(slider.max);
+      if(side === "left"){
+        els.leftMassInput.value = Math.round(v);
+        els.leftMassSlider.value = Math.round(v);
+      } else {
+        els.rightMassInput.value = Math.round(v);
+        els.rightMassSlider.value = Math.round(v);
+      }
+    }
 
-    const raw = inp.value.trim();
-    if (raw === "") return;
+    function syncMassFromInputs(){
+      const left = readNumber(els.leftMassInput, 1);
+      const right = readNumber(els.rightMassInput, 1);
 
-    const n = Number(raw);
-    if (!Number.isFinite(n)) return;
+      els.leftMassSlider.value = clamp(left, 1, 6000);
+      els.rightMassSlider.value = clamp(right, 1, 6000);
+    }
 
-    const v = clamp(Math.round(n), min, max);
-    slider.value = String(v);
-    inp.value = String(v);
-    recalc();
-  }
+    function syncMassFromSliders(){
+      els.leftMassInput.value = els.leftMassSlider.value;
+      els.rightMassInput.value = els.rightMassSlider.value;
+    }
 
-  els.massDogIn.addEventListener('input', () => applyMassInput('dog'));
-  els.massElIn.addEventListener('input', () => applyMassInput('el'));
+    function updateArmLimits(){
+      const length = readNumber(els.boardLengthSlider, 5);
+      const half = length / 2;
 
-  els.massDogIn.addEventListener('blur', () => {
-    if (els.massDogIn.value.trim() === "") els.massDogIn.value = els.massDog.value;
-  });
-  els.massElIn.addEventListener('blur', () => {
-    if (els.massElIn.value.trim() === "") els.massElIn.value = els.massEl.value;
-  });
+      [els.leftArmSlider, els.rightArmSlider].forEach(slider => {
+        slider.max = half.toFixed(2);
+        if(parseFloat(slider.value) > half){
+          slider.value = half.toFixed(2);
+        }
+        if(parseFloat(slider.value) < 0.1){
+          slider.value = 0.1;
+        }
+      });
+    }
 
-  ['input','change'].forEach(evt=>{
-    els.massDog.addEventListener(evt, recalc);
-    els.massEl.addEventListener(evt, recalc);
-    els.len.addEventListener(evt, recalc);
-    els.xDog.addEventListener(evt, recalc);
-    els.xEl.addEventListener(evt, recalc);
-  });
+    function setPreset(name){
+      const p = presets[name];
+      if(!p) return;
 
-  function enableDrag(el, setter) {
-    let dragging = false;
+      els.leftType.value = p.leftType;
+      els.rightType.value = p.rightType;
 
-    el.addEventListener('mousedown', () => dragging = true);
-    window.addEventListener('mouseup', () => dragging = false);
+      setMass("left", p.leftMass);
+      setMass("right", p.rightMass);
 
-    window.addEventListener('mousemove', e => {
-      if (!dragging) return;
+      els.boardLengthSlider.value = p.boardLength;
+      updateArmLimits();
+      els.leftArmSlider.value = p.leftArm;
+      els.rightArmSlider.value = p.rightArm;
 
-      const rect = el.ownerSVGElement.getBoundingClientRect();
-      const x = e.clientX - rect.left;
+      updateAll();
+    }
 
-      const L = parseFloat(els.len.value);
-      const half = L / 2;
+    function updateObjects(){
+      const left = objectData[els.leftType.value];
+      const right = objectData[els.rightType.value];
 
-      const meters = ((x - 410) / 260) * half;
-      setter(clamp(meters, -half, half));
-      recalc();
+      els.leftIcon.textContent = left.icon;
+      els.rightIcon.textContent = right.icon;
+      els.leftLabel.textContent = left.label;
+      els.rightLabel.textContent = right.label;
+    }
+
+    function updateVisual(leftArm, rightArm, maxArm, angle){
+      els.seesaw.style.transform = `translateX(-50%) rotate(${angle}deg)`;
+
+      const leftPercent = 50 - (leftArm / maxArm) * 48;
+      const rightPercent = 50 + (rightArm / maxArm) * 48;
+
+      els.leftObject.style.left = `${leftPercent}%`;
+      els.rightObject.style.left = `${rightPercent}%`;
+
+      // Objekt musí zůstat vzpřímený, proto ho natočíme opačně než prkno.
+      els.leftObject.style.transform = `translateX(-50%) rotate(${-angle}deg)`;
+      els.rightObject.style.transform = `translateX(-50%) rotate(${-angle}deg)`;
+
+      const visualWidth = document.querySelector(".visualBox").getBoundingClientRect().width;
+      const center = visualWidth / 2;
+      const leftX = center - (leftArm / maxArm) * (visualWidth * 0.82 * 0.48);
+      const rightX = center + (rightArm / maxArm) * (visualWidth * 0.82 * 0.48);
+
+      els.leftDistance.style.left = `${leftX}px`;
+      els.leftDistance.style.width = `${center - leftX}px`;
+
+      els.rightDistance.style.left = `${center}px`;
+      els.rightDistance.style.width = `${rightX - center}px`;
+    }
+
+    function updateAll(){
+      updateArmLimits();
+      updateObjects();
+
+      const leftMass = readNumber(els.leftMassInput, 1);
+      const rightMass = readNumber(els.rightMassInput, 1);
+      const boardLength = readNumber(els.boardLengthSlider, 5);
+      const maxArm = boardLength / 2;
+      const leftArm = clamp(readNumber(els.leftArmSlider, 1), 0.1, maxArm);
+      const rightArm = clamp(readNumber(els.rightArmSlider, 1), 0.1, maxArm);
+
+      els.leftArmSlider.value = leftArm;
+      els.rightArmSlider.value = rightArm;
+
+      const leftForce = leftMass * g;
+      const rightForce = rightMass * g;
+
+      const leftMomentSimple = leftMass * leftArm;      // kg·m, školní zjednodušení
+      const rightMomentSimple = rightMass * rightArm;   // kg·m
+
+      const leftMoment = leftForce * leftArm;           // N·m
+      const rightMoment = rightForce * rightArm;        // N·m
+
+      const diffSimple = rightMomentSimple - leftMomentSimple;
+      const diff = rightMoment - leftMoment;
+
+      const maxMoment = Math.max(leftMomentSimple, rightMomentSimple, 1);
+      const angle = clamp((diffSimple / maxMoment) * 16, -16, 16);
+
+      updateVisual(leftArm, rightArm, maxArm, angle);
+
+      els.leftMassValue.textContent = `${format(leftMass, 0)} kg`;
+      els.rightMassValue.textContent = `${format(rightMass, 0)} kg`;
+      els.boardLengthValue.textContent = `${format(boardLength, 1)} m`;
+      els.leftArmValue.textContent = `${format(leftArm, 2)} m`;
+      els.rightArmValue.textContent = `${format(rightArm, 2)} m`;
+      els.leftDistanceText.textContent = `r₁ = ${format(leftArm, 2)} m`;
+      els.rightDistanceText.textContent = `r₂ = ${format(rightArm, 2)} m`;
+
+      els.leftMomentText.textContent = `${format(leftMomentSimple, 2)} kg·m`;
+      els.rightMomentText.textContent = `${format(rightMomentSimple, 2)} kg·m`;
+      els.differenceText.textContent = `${format(Math.abs(diffSimple), 2)} kg·m`;
+
+      els.leftForceText.textContent = `F₁ = ${format(leftForce, 1)} N`;
+      els.rightForceText.textContent = `F₂ = ${format(rightForce, 1)} N`;
+      els.differenceForceText.textContent = `${format(Math.abs(diff), 1)} N·m`;
+
+      els.leftCalc.innerHTML =
+        `M₁ = m₁ · r₁ = ${format(leftMass,0)} · ${format(leftArm,2)} = <strong>${format(leftMomentSimple,2)} kg·m</strong><br>` +
+        `Přesněji: M₁ = F₁ · r₁ = ${format(leftForce,1)} · ${format(leftArm,2)} = <strong>${format(leftMoment,1)} N·m</strong>`;
+
+      els.rightCalc.innerHTML =
+        `M₂ = m₂ · r₂ = ${format(rightMass,0)} · ${format(rightArm,2)} = <strong>${format(rightMomentSimple,2)} kg·m</strong><br>` +
+        `Přesněji: M₂ = F₂ · r₂ = ${format(rightForce,1)} · ${format(rightArm,2)} = <strong>${format(rightMoment,1)} N·m</strong>`;
+
+      const tolerance = Math.max(0.04, (leftMomentSimple + rightMomentSimple) * 0.01);
+
+      if(Math.abs(diffSimple) <= tolerance){
+        els.resultBanner.innerHTML = `✅ Rovnováha – houpačka je vyvážená.<br><span style="font-size:15px;color:#a7f3d0;">Levá a pravá strana mají téměř stejný moment.</span>`;
+      } else if(diffSimple > 0){
+        els.resultBanner.innerHTML = `⬇️ Převažuje pravá strana.<br><span style="font-size:15px;color:#fed7aa;">Pravý moment je větší než levý.</span>`;
+      } else {
+        els.resultBanner.innerHTML = `⬇️ Převažuje levá strana.<br><span style="font-size:15px;color:#fed7aa;">Levý moment je větší než pravý.</span>`;
+      }
+    }
+
+    function createTask(){
+      const examples = [
+        { leftType:"child", rightType:"adult", leftMass:30, rightMass:60 },
+        { leftType:"child", rightType:"weight", leftMass:35, rightMass:70 },
+        { leftType:"dog", rightType:"elephant", leftMass:25, rightMass:400 },
+        { leftType:"weight", rightType:"weight", leftMass:20, rightMass:50 },
+        { leftType:"adult", rightType:"stone", leftMass:70, rightMass:140 }
+      ];
+
+      const ex = examples[Math.floor(Math.random() * examples.length)];
+      const boardLength = 5 + Math.random() * 2;
+      const maxArm = boardLength / 2;
+
+      let unknownSide = Math.random() < 0.5 ? "left" : "right";
+      let knownArm, targetArm;
+
+      for(let i = 0; i < 200; i++){
+        knownArm = 0.4 + Math.random() * (maxArm - 0.5);
+
+        if(unknownSide === "left"){
+          targetArm = (ex.rightMass * knownArm) / ex.leftMass;
+        } else {
+          targetArm = (ex.leftMass * knownArm) / ex.rightMass;
+        }
+
+        if(targetArm >= 0.25 && targetArm <= maxArm){
+          break;
+        }
+
+        unknownSide = unknownSide === "left" ? "right" : "left";
+      }
+
+      if(targetArm > maxArm){
+        targetArm = maxArm;
+      }
+
+      els.presetSelect.value = "children";
+      els.leftType.value = ex.leftType;
+      els.rightType.value = ex.rightType;
+      setMass("left", ex.leftMass);
+      setMass("right", ex.rightMass);
+      els.boardLengthSlider.value = boardLength.toFixed(1);
+      updateArmLimits();
+
+      if(unknownSide === "left"){
+        els.rightArmSlider.value = knownArm.toFixed(2);
+        els.leftArmSlider.value = targetArm.toFixed(2);
+        currentTask = {
+          unknownSide,
+          correct: targetArm,
+          text:
+            `Pravá strana má hmotnost <strong>${ex.rightMass} kg</strong> a je ve vzdálenosti <strong>${format(knownArm,2)} m</strong> od osy.<br>` +
+            `Levá strana má hmotnost <strong>${ex.leftMass} kg</strong>.<br>` +
+            `Vypočítej, jak daleko od osy má být levá strana, aby byla rovnováha.<br><br>` +
+            `<strong>Zápis:</strong><br>` +
+            `m₂ = ${ex.rightMass} kg, r₂ = ${format(knownArm,2)} m, m₁ = ${ex.leftMass} kg, r₁ = ?<br><br>` +
+            `<strong>Dosazení:</strong><br>` +
+            `m₁ · r₁ = m₂ · r₂<br>` +
+            `${ex.leftMass} kg · r₁ = ${ex.rightMass} kg · ${format(knownArm,2)} m<br>` +
+            `${ex.leftMass} kg · r₁ = ${format(ex.rightMass * knownArm,2)} kg·m<br>` +
+            `r₁ = ${format(ex.rightMass * knownArm,2)} kg·m / ${ex.leftMass} kg`
+        };
+      } else {
+        els.leftArmSlider.value = knownArm.toFixed(2);
+        els.rightArmSlider.value = targetArm.toFixed(2);
+        currentTask = {
+          unknownSide,
+          correct: targetArm,
+          text:
+            `Levá strana má hmotnost <strong>${ex.leftMass} kg</strong> a je ve vzdálenosti <strong>${format(knownArm,2)} m</strong> od osy.<br>` +
+            `Pravá strana má hmotnost <strong>${ex.rightMass} kg</strong>.<br>` +
+            `Vypočítej, jak daleko od osy má být pravá strana, aby byla rovnováha.<br><br>` +
+            `<strong>Zápis:</strong><br>` +
+            `m₁ = ${ex.leftMass} kg, r₁ = ${format(knownArm,2)} m, m₂ = ${ex.rightMass} kg, r₂ = ?<br><br>` +
+            `<strong>Dosazení:</strong><br>` +
+            `m₁ · r₁ = m₂ · r₂<br>` +
+            `${ex.leftMass} kg · ${format(knownArm,2)} m = ${ex.rightMass} kg · r₂<br>` +
+            `${format(ex.leftMass * knownArm,2)} kg·m = ${ex.rightMass} kg · r₂<br>` +
+            `r₂ = ${format(ex.leftMass * knownArm,2)} kg·m / ${ex.rightMass} kg`
+        };
+      }
+
+      els.taskText.innerHTML = currentTask.text + `<br><br><strong>Jednotky:</strong> hmotnost dosazujeme v kg, rameno páky v m, výsledek vyjde v metrech.`;
+      els.taskAnswerInput.value = "";
+      els.taskResult.textContent = "";
+
+      updateAll();
+    }
+
+    function checkTask(){
+      if(!currentTask){
+        els.taskResult.textContent = "Nejdříve klikni na „Náhodná úloha“.";
+        return;
+      }
+
+      const value = readNumber(els.taskAnswerInput, NaN);
+
+      if(!Number.isFinite(value)){
+        els.taskResult.textContent = "Zadej číslo v metrech.";
+        return;
+      }
+
+      const diff = Math.abs(value - currentTask.correct);
+
+      if(diff <= 0.03){
+        els.taskResult.textContent = `✅ Správně. Výsledek je přibližně ${format(currentTask.correct,2)} m.`;
+      } else {
+        els.taskResult.textContent = `❌ Zatím ne. Správně je přibližně ${format(currentTask.correct,2)} m.`;
+      }
+    }
+
+    function showTaskPosition(){
+      if(!currentTask){
+        els.taskResult.textContent = "Nejdříve klikni na „Náhodná úloha“.";
+        return;
+      }
+
+      if(currentTask.unknownSide === "left"){
+        els.leftArmSlider.value = currentTask.correct;
+      } else {
+        els.rightArmSlider.value = currentTask.correct;
+      }
+
+      els.taskResult.textContent = `Správná poloha byla nastavena na ${format(currentTask.correct,2)} m.`;
+      updateAll();
+    }
+
+    function clearTask(){
+      currentTask = null;
+      els.taskText.textContent = "Klikni na „Náhodná úloha“.";
+      els.taskAnswerInput.value = "";
+      els.taskResult.textContent = "";
+    }
+
+
+    function armFromPointer(event, side){
+      const visual = document.querySelector(".visualBox");
+      const rect = visual.getBoundingClientRect();
+
+      const clientX = event.clientX;
+      const x = clientX - rect.left;
+      const center = rect.width / 2;
+
+      const boardLength = readNumber(els.boardLengthSlider, 5);
+      const maxArm = boardLength / 2;
+
+      // Stejný poměr jako ve vizualizaci: prkno zabírá 82 % šířky a poloha objektů 48 % od středu.
+      const maxPixelDistance = rect.width * 0.82 * 0.48;
+
+      let pixelDistance;
+
+      if(side === "left"){
+        pixelDistance = center - x;
+      } else {
+        pixelDistance = x - center;
+      }
+
+      const arm = clamp((pixelDistance / maxPixelDistance) * maxArm, 0.1, maxArm);
+      return arm;
+    }
+
+    function enableObjectDrag(objectElement, sliderElement, side){
+      let dragging = false;
+
+      objectElement.addEventListener("pointerdown", (event) => {
+        dragging = true;
+        objectElement.setPointerCapture(event.pointerId);
+        event.preventDefault();
+      });
+
+      objectElement.addEventListener("pointermove", (event) => {
+        if(!dragging) return;
+
+        const arm = armFromPointer(event, side);
+        sliderElement.value = arm.toFixed(2);
+        updateAll();
+        event.preventDefault();
+      });
+
+      objectElement.addEventListener("pointerup", (event) => {
+        dragging = false;
+        try{
+          objectElement.releasePointerCapture(event.pointerId);
+        }catch(e){}
+      });
+
+      objectElement.addEventListener("pointercancel", () => {
+        dragging = false;
+      });
+    }
+
+    enableObjectDrag(els.leftObject, els.leftArmSlider, "left");
+    enableObjectDrag(els.rightObject, els.rightArmSlider, "right");
+
+
+    // Události
+    els.presetSelect.addEventListener("change", () => setPreset(els.presetSelect.value));
+
+    document.querySelectorAll("button[data-preset]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        els.presetSelect.value = btn.dataset.preset;
+        setPreset(btn.dataset.preset);
+      });
     });
-  }
 
-  enableDrag(els.dog, v => els.xDog.value = v);
-  enableDrag(els.elephant, v => els.xEl.value = v);
+    [els.leftType, els.rightType].forEach(sel => {
+      sel.addEventListener("change", () => {
+        updateObjects();
+        updateAll();
+      });
+    });
 
-  // zamykání neznámého posuvníku
-  function lockUnknownSlider(lock){
-    // nejdřív vše odemknout (kvůli nové úloze)
-    els.xDog.disabled = false;
-    els.xEl.disabled  = false;
+    els.leftMassInput.addEventListener("input", () => {
+      syncMassFromInputs();
+      updateAll();
+    });
 
-    if (!task) return;
+    els.rightMassInput.addEventListener("input", () => {
+      syncMassFromInputs();
+      updateAll();
+    });
 
-    if (task.unknown === 'dog'){
-      els.xDog.disabled = lock;
-    } else {
-      els.xEl.disabled = lock;
-    }
-  }
+    els.leftMassSlider.addEventListener("input", () => {
+      syncMassFromSliders();
+      updateAll();
+    });
 
-  function newTask(){
-    els.taskResult.textContent = '';
-    els.ans.value = '';
+    els.rightMassSlider.addEventListener("input", () => {
+      syncMassFromSliders();
+      updateAll();
+    });
 
-    const L = rndStep(3.0, 8.0, 0.5);
-    els.len.value = L;
-    const half = L/2;
+    [els.boardLengthSlider, els.leftArmSlider, els.rightArmSlider].forEach(slider => {
+      slider.addEventListener("input", updateAll);
+    });
 
-    const mDog = rndInt(5, 60);
-    const mEl  = rndInt(300, 4000);
+    els.newTaskBtn.addEventListener("click", createTask);
+    els.checkTaskBtn.addEventListener("click", checkTask);
+    els.showTaskBtn.addEventListener("click", showTaskPosition);
+    els.clearTaskBtn.addEventListener("click", clearTask);
 
-    els.massDog.value = mDog;
-    els.massEl.value  = mEl;
+    window.addEventListener("resize", updateAll);
 
-    const unknown = (Math.random() < 0.5) ? 'dog' : 'el';
-    const known = rndStep(Math.max(0.4, half*0.35), Math.max(0.6, half-0.2), 0.05);
-
-    let target;
-
-    if (unknown === 'dog'){
-      target = (mEl * known) / mDog;
-      els.xEl.value = +known;
-      els.xDog.value = -clamp(target, 0.05, half);
-
-      els.taskText.innerHTML =
-        `Slon má hmotnost <b>${mEl} kg</b> a sedí ve vzdálenosti <b>${known.toFixed(2)} m</b> od osy.<br>`+
-        `Pes má hmotnost <b>${mDog} kg</b>. Vypočítej, jak daleko od osy má sedět pes (dₚ), aby byla rovnováha.`;
-    } else {
-      target = (mDog * known) / mEl;
-      els.xDog.value = -known;
-      els.xEl.value = +clamp(target, 0.05, half);
-
-      els.taskText.innerHTML =
-        `Pes má hmotnost <b>${mDog} kg</b> a sedí ve vzdálenosti <b>${known.toFixed(2)} m</b> od osy.<br>`+
-        `Slon má hmotnost <b>${mEl} kg</b>. Vypočítej, jak daleko od osy má sedět slon (dₛ), aby byla rovnováha.`;
-    }
-
-    task = { unknown, target, tol: 0.02, half };
-
-    recalc();
-    lockUnknownSlider(true); // zamkneme neznámý posuvník
-  }
-
-  function checkTask(){
-    if (!task){
-      els.taskResult.textContent = 'Nejdřív klikni na „Náhodná úloha“.';
-      els.taskResult.className = 'small muted';
-      return;
-    }
-
-    const raw = els.ans.value.trim();
-    if (raw === ''){
-      els.taskResult.textContent = 'Zadej výsledek (rameno v metrech).';
-      els.taskResult.className = 'small muted';
-      return;
-    }
-
-    const val = Number(raw);
-    if (!Number.isFinite(val)){
-      els.taskResult.textContent = 'Výsledek musí být číslo.';
-      els.taskResult.className = 'small muted';
-      return;
-    }
-
-    const v = clamp(val, 0, task.half);
-    const correct = clamp(task.target, 0, task.half);
-    const diff = Math.abs(v - correct);
-
-    if (diff <= task.tol){
-      els.taskResult.textContent = `✅ Správně! Správný výsledek je přibližně ${correct.toFixed(2)} m (tvoje chyba ${diff.toFixed(2)} m).`;
-      els.taskResult.className = 'small';
-    } else {
-      els.taskResult.textContent = `❌ Zatím ne. Správně je přibližně ${correct.toFixed(2)} m (tvoje chyba ${diff.toFixed(2)} m).`;
-      els.taskResult.className = 'small';
-    }
-
-    lockUnknownSlider(false); // po kontrole odemkneme
-  }
-
-  els.newTask.addEventListener('click', newTask);
-  els.checkTask.addEventListener('click', checkTask);
-
-  recalc();
-</script>
+    setPreset("dogElephant");
+  </script>
 </body>
 </html>
